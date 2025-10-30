@@ -4,6 +4,8 @@ import { DataContext } from "../context/DataContext";
 import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
 
+import { Menu} from 'lucide-react';
+import { Link } from "react-router-dom";
 // Helper: convert Google Sheets duration string to seconds
 const durationStrToSeconds = (dateStr) => {
   if (!dateStr) return 0;
@@ -96,7 +98,27 @@ const BookSummary = () => {
                 borderColor="border-gray-200"
                 textColor="text-blue-700"
                 footerTextColor="text-gray-600"
-              />
+      />
+      {/* Main content */}
+      <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-semibold">Book Status</h1>
+            <p className="text-gray-500 text-sm">Overview library and reading progress.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              className="md:hidden p-2 rounded-lg border text-gray-700 hover:bg-gray-100"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu size={22} />
+            </button>
+            {/* <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+              <Link to="https://forms.gle/AUyCFVASWgtFVJg69" target="blank"> + New Session</Link>
+            </button> */}
+          </div>
+        </div>
+
     <div>
       <h1> Book Summary</h1>
       <table border="1" cellPadding="5">
@@ -127,7 +149,8 @@ const BookSummary = () => {
           ))}
         </tbody>
       </table>
-      </div>
+        </div>
+        </main >
     </div>
   );
 };

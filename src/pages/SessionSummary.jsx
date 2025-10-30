@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../context/DataContext";
 import "./summary.css";
+import { Menu } from 'lucide-react';
+import { Link } from "react-router-dom";
 import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
 
@@ -70,37 +72,56 @@ function Sessions() {
               borderColor="border-gray-200"
               textColor="text-blue-700"
               footerTextColor="text-gray-600"
-            />
-    <div className="App">
-      <h1>Reading Summary</h1>
-
-      {summary && (
-        <div className="summary">
-          <p><strong>Total Pages Read:</strong> {summary.totalPages}</p>
-          <p><strong>Total Sessions:</strong> {summary.totalSessions}</p>
-          <p><strong>Books Read:</strong> {summary.totalBooks}</p>
-          <p><strong>Total Reading Time:</strong> {summary.totalTime}</p>
+      />
+      
+      {/* Main content */}
+      <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-semibold">Sessions</h1>
+            <p className="text-gray-500 text-sm">Reading sessions overview</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              className="md:hidden p-2 rounded-lg border text-gray-700 hover:bg-gray-100"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu size={22} />
+            </button>
+            <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+              <Link to="https://forms.gle/AUyCFVASWgtFVJg69" target="blank"> + New Session</Link>
+            </button>
+          </div>
         </div>
-      )}
+        <div className="app">
+                {summary && (
+                  <div className="summary">
+                    <p><strong>Total Pages Read:</strong> {summary.totalPages}</p>
+                    <p><strong>Total Sessions:</strong> {summary.totalSessions}</p>
+                    <p><strong>Books Read:</strong> {summary.totalBooks}</p>
+                    <p><strong>Total Reading Time:</strong> {summary.totalTime}</p>
+                  </div>
+                )}
 
-      <table>
-        <thead>
-          <tr>
-            {sessions[0].map((header, i) => <th key={i}>{header}</th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {sessions.slice(1).map((row, i) => (
-            <tr key={i}>
-              {row.map((cell, j) => {
-                if (j === 9 || j === 4 || j === 5) return <td key={j}>{formatDuration(cell)}</td>;
-                return <td key={j}>{cell}</td>;
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+                <table>
+                  <thead>
+                    <tr>
+                      {sessions[0].map((header, i) => <th key={i}>{header}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sessions.slice(1).map((row, i) => (
+                      <tr key={i}>
+                        {row.map((cell, j) => {
+                          if (j === 9 || j === 4 || j === 5) return <td key={j}>{formatDuration(cell)}</td>;
+                          return <td key={j}>{cell}</td>;
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                </div>  
+      </main >
     </div>
   );
 }

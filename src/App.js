@@ -7,7 +7,7 @@ function App() {
   return (<>
     <Router>
       <nav>
-        <Link to="/">Session Summary</Link> | <Link to="/books">Book Summary</Link>
+        <Link to="/sessions">Session Summary</Link> | <Link to="/books">Book Summary</Link>
       </nav>
       <Routes>
         <Route path="/sessions" element={<SessionSummary />} />

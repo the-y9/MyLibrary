@@ -4,16 +4,18 @@ import SessionSummary from "./pages/SessionSummary";
 import BookSummary from "./pages/BookSummary";
 
 function App() {
-  return (
+  return (<>
     <Router>
       <nav>
         <Link to="/">Session Summary</Link> | <Link to="/books">Book Summary</Link>
       </nav>
       <Routes>
-        <Route path="/" element={<SessionSummary />} />
+        <Route path="/sessions" element={<SessionSummary />} />
         <Route path="/books" element={<BookSummary />} />
       </Routes>
     </Router>
+  <a href="https://forms.gle/AUyCFVASWgtFVJg69" target="blank">add session</a>  
+  </>
   );
 }
 

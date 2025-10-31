@@ -197,7 +197,7 @@ export default function Dashboard() {
     <div className="flex min-h-screen bg-gray-50">
      <SideBar sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
-              book="Library"
+              title="Library"
               navComponent={NavSidebar}
               footerContent="👤 Profile Settings"
               width="w-72"

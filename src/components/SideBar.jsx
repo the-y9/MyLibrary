@@ -1,7 +1,7 @@
 export default function Sidebar({
     sidebarOpen,
     setSidebarOpen,
-    title = "Sidebar",
+    title = "Library",
     navComponent: NavComponent,
     footerContent = "⚙️ Settings",
     width = "w-64",

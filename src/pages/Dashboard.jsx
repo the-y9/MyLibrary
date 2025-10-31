@@ -1,44 +1,217 @@
-import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Menu, X } from 'lucide-react';
+import { useContext, useState, useMemo } from 'react';
+import { Menu } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { DataContext } from "../context/DataContext";
 import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
+import DataListCard from '../components/RecentTiles';
+import GenericLineChart from '../components/GenericLineChart';
+import GenericStatsCards from '../components/GenericStatsCard';
+import GenericPieChart from '../components/GenericPieChart';
 
-const data = [
-  { month: 'Jan', sales: 32000 },
-  { month: 'Feb', sales: 29000 },
-  { month: 'Mar', sales: 34000 },
-  { month: 'Apr', sales: 45000 },
-  { month: 'May', sales: 37000 },
-  { month: 'Jun', sales: 46000 },
-];
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { sessions } = useContext(DataContext);
+  const [interval, setInterval] = useState("daily"); // "daily" | "weekly" | "monthly" | "yearly"
 
+  const processedData = useMemo(() => {
+    if (!sessions || sessions.length < 2) return [];
+
+    const headers = sessions[0];
+    const rows = sessions.slice(1);
+
+    return rows.map((row) => {
+      const timestamp = row[0];
+      
+      const book = row[1];
+      
+      const startTime = row[4];
+      const endTime = (row[5]);
+
+      const pagesRead = row[8];
+      const timeSpent =
+        startTime && endTime
+          ? (endTime - startTime) / (1000 * 60) // minutes
+          : 0;
+      const speed = timeSpent > 0 ? +(pagesRead / timeSpent).toFixed(2) : 0;
+
+      const id = row[10];
+      const chapter = row[6];
+      const status = row[7]
+
+      return {
+        timestamp,
+        book,
+        pages: pagesRead,
+        time: timeSpent,
+        speed,
+        id,
+        chapter,
+        status,
+      };
+    });
+  }, [sessions]);
+
+  const recentData = useMemo(() => {
+    if (!processedData || processedData.length === 0) return [];
+    const sorted = [...processedData].sort((a, b) => b.timestamp - a.timestamp);
+    const top3 =  sorted.slice(0, 3);
+
+    return top3.map((item) => {
+      const date = new Date(item.timestamp);
+      const formattedDate = date.toLocaleDateString("default", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+  
+      
+      return {
+        id: item.timestamp, // fallback to timestamp if id missing
+        label: item.chapter ?? "Chapter",
+        subtitle: `${item.book} · ${formattedDate}`,
+        value: `${item.pages} pages · ${item.time.toFixed(2)} min`,
+        status: item.status || "Pending",
+      };
+    });
+  }, [processedData]);
+  
+  const chartData = useMemo(() => {
+    if (!processedData || processedData.length === 0) return [];
+  
+    const grouped = {};
+  
+    processedData.forEach((item) => {
+      const date = new Date(item.timestamp);
+      let key;
+  
+      switch (interval) {
+        case "daily":
+          key = date.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          break;
+        case "weekly": {
+          const startOfWeek = new Date(date);
+          startOfWeek.setDate(date.getDate() - date.getDay()); // get Sunday
+          key = startOfWeek.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          break;
+        }
+        case "monthly":
+          key = date.toLocaleDateString("default", { month: "short", year: "numeric" });
+          break;
+        case "yearly":
+          key = date.getFullYear();
+          break;
+        default:
+          key = date.toLocaleDateString();
+      }
+  
+      if (!grouped[key]) grouped[key] = { timestamp: key, pages: null, time: null, speed: null, count: null };
+  
+      grouped[key].pages += item.pages;
+      grouped[key].time += item.time;
+      grouped[key].speed += item.speed;
+      grouped[key].count += 1;
+    });
+  
+    const result = Object.values(grouped).map((g) => ({
+      timestamp: g.timestamp,
+      pages: g.pages,
+      time: g.time,
+      speed: g.count ? +(g.speed / g.count).toFixed(2) : null,
+    }));
+
+    // ✅ Sort by timestamp if not guaranteed sorted
+    result.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    // ✅ Keep only last 10 intervals
+    return result.slice(-10);
+
+  }, [processedData, interval]);
+  
+
+  const statsData = useMemo(() => {
+    if (!chartData || chartData.length === 0) return [];
+  // console.log(chartData);
+  
+    // Take the last aggregate
+    const last = chartData[chartData.length - 1];
+  
+    const totalPages = last.pages;
+    const totalTime = last.time; // in minutes
+    const avgSpeed = totalTime > 0 ? +(totalPages / totalTime).toFixed(2) : 0;
+  
+    return [
+      { label: "Total Pages Read", value: totalPages, change: "" },
+      totalTime < 60
+        ? { label: "Total Time (min)", value: totalTime.toFixed(2), change: "" }
+        : { label: "Total Time (hrs)", value: (totalTime / 60).toFixed(2), change: "" },
+      { label: "Average Speed (pages/min)", value: avgSpeed, change: "" },
+    ];
+  }, [chartData]);
+  
+  const pieData = useMemo(() => {
+    if (!processedData || processedData.length === 0) return [];
+  
+    // For the last interval
+    const lastInterval = chartData[chartData.length - 1];
+  
+    // Aggregate by book using only items contributing to this interval
+    const books = {};
+    processedData.forEach(item => {
+      let key;
+      const date = new Date(item.timestamp);
+  
+      switch(interval) {
+        case "daily":
+          key = date.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          break;
+        case "weekly": {
+          const startOfWeek = new Date(date);
+          startOfWeek.setDate(date.getDate() - date.getDay());
+          key = startOfWeek.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          break;
+        }
+        case "monthly":
+          key = date.toLocaleDateString("default", { month: "short", year: "numeric" });
+          break;
+        case "yearly":
+          key = date.getFullYear();
+          break;
+        default:
+          key = date.toLocaleDateString();
+      }
+  
+      if(key === lastInterval.timestamp){
+        if(!books[item.book]) books[item.book] = 0;
+        books[item.book] += item.pages;
+      }
+    });
+  
+    return Object.entries(books).map(([book, pages]) => ({ label: book, value: pages }));
+  }, [processedData, chartData, interval]);
+  
+  
+    
   return (
     <div className="flex min-h-screen bg-gray-50">
-     <SideBar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        title="Library"
-        navComponent={NavSidebar}
-        footerContent="👤 Profile Settings"
-        width="w-72"
-        bgColor="bg-gray-50"
-        borderColor="border-gray-200"
-        textColor="text-blue-700"
-        footerTextColor="text-gray-600"
-      />
+     <SideBar sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              book="Library"
+              navComponent={NavSidebar}
+              footerContent="👤 Profile Settings"
+              width="w-72"
+              bgColor="bg-gray-50"
+              borderColor="border-gray-200"
+              textColor="text-blue-700"
+              footerTextColor="text-gray-600" />
 
       {/* Main content */}
       <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-semibold">Dashboard</h2>
-            <p className="text-gray-500 text-sm">Welcome back! Here's your business overview</p>
+            <p className="text-gray-500 text-sm">Welcome back! Here's your overview</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -54,84 +227,56 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-xl shadow">
-            <p className="text-sm text-gray-500">Total Sales</p>
-            <h3 className="text-2xl font-bold">₹45,230</h3>
-            <p className="text-green-500 text-sm">+12.5%</p>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow">
-            <p className="text-sm text-gray-500">Total Profit</p>
-            <h3 className="text-2xl font-bold">₹12,450</h3>
-            <p className="text-green-500 text-sm">+8.3%</p>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow">
-            <p className="text-sm text-gray-500">Orders</p>
-            <h3 className="text-2xl font-bold">42</h3>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow">
-            <p className="text-sm text-gray-500">Active Customers</p>
-            <h3 className="text-2xl font-bold">156</h3>
-          </div>
-        </div>
+        <GenericStatsCards stats={statsData} />
 
         {/* Alerts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-300 text-yellow-800 p-3 rounded-md">
             ⚠️ <span>Low Stock Alert: 5 products are running low on stock.</span>
           </div>
           <div className="flex items-center gap-2 bg-blue-50 border border-blue-300 text-blue-800 p-3 rounded-md">
             ⏰ <span>3 memberships expire in 3 days. Send payment reminders.</span>
           </div>
+        </div> */}
+
+        {/* Graphs & recent */}
+        <div className="flex gap-2 mb-4">
+          {["daily", "weekly", "monthly", "yearly"].map((option) => (
+            <button
+              key={option}
+              onClick={() => setInterval(option)}
+              className={`px-3 py-1 rounded ${
+                interval === option ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </button>
+          ))}
         </div>
 
-        {/* Graph & Orders */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white p-4 rounded-xl shadow">
-            <h3 className="font-semibold mb-4">Monthly Sales Trend</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="sales" fill="#22c55e" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          {/* Graphs */}
+          <GenericLineChart
+            book="Pages vs Time"
+            data={chartData}
+            dataKeyX="timestamp"
+            lines={[{ key: "pages", label: "Pages" },
+              { key: "time", label: "Time Spent (min)" },
+              { key: "speed", label: "Speed (pages/min)" },
+            ]}
+            rightAxis={true}
+          />
+          <GenericPieChart title="Pages Read by Book" data={pieData} />
 
-          <div className="bg-white p-4 rounded-xl shadow">
-            <h3 className="font-semibold mb-4">Recent Orders</h3>
-            <div className="space-y-3">
-              {[
-                { id: '#1001', name: 'Priya Sharma', date: 'Oct 10, 2025', amount: '₹4500', status: 'Completed' },
-                { id: '#1002', name: 'Rajesh Kumar', date: 'Oct 12, 2025', amount: '₹3200', status: 'Pending' },
-                { id: '#1003', name: 'Anita Desai', date: 'Oct 13, 2025', amount: '₹5800', status: 'Completed' },
-              ].map((order) => (
-                <div
-                  key={order.id}
-                  className="flex justify-between items-center border p-3 rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium">Order {order.id}</p>
-                    <p className="text-sm text-gray-500">
-                      {order.name} · {order.date}
-                    </p>
-                    <p className="font-semibold">{order.amount}</p>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      order.status === 'Completed'
-                        ? 'bg-green-100 text-green-600'
-                        : 'bg-yellow-100 text-yellow-600'
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Recents */}
+          
+          <DataListCard book="Recent Sessions" items={recentData} keyField="id"
+            label="label"
+            subtitle="subtitle"
+            value="value"
+            status="status"
+          />
+
         </div>
       </main>
     </div>

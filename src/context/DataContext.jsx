@@ -7,6 +7,18 @@ const SHEET_ID = "1HzHupzGxFMqQjtz0ZsVEHZgD87MiEk-VJcg0OrIfUio";
 const SESSIONS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 const BOOKS_MASTER_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0`;
 
+const parseExcelDate = (dateStr) => {
+  if (!dateStr || !dateStr.startsWith("Date(")) return null;
+  try {
+    const parts = dateStr.match(/Date\(([^)]+)\)/)[1].split(",").map(Number);
+    const [y, m, d, h, min, s] = parts;
+    return new Date(y, m, d, h, min, s);
+  } catch {
+    return null;
+  }
+};
+
+
 export const DataProvider = ({ children }) => {
   const [sessions, setSessions] = useState(null);
   const [books, setBooks] = useState(null);
@@ -64,11 +76,21 @@ export const DataProvider = ({ children }) => {
       const headerRow = parsed.table.cols.map((c) => c.label);
   
       // Transform rows
-      const sessionData = rows.map((r) => r.c.map((c) => (c ? c.v : "")));
-  
+      const sessionData = rows.map((r) =>
+        r.c.map((c, i) => {
+          const value = c ? c.v : "";
+          // Convert date columns (e.g., first column) to Date objects
+          if (i === 0||i === 4||i === 5) return parseExcelDate(value);
+          return value;
+        })
+      );
+
+      // Sort descending by timestamp column (index 0)
+      sessionData.sort((a, b) => b[0] - a[0]);
+      
       // Combine header + data
       const allData = [headerRow, ...sessionData];
-  
+  // console.log(allData);
       setSessions(allData);
       localStorage.setItem("sessions", JSON.stringify(allData));
     } catch (err) {

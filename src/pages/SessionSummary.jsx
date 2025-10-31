@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
 
+
 function Sessions() {
   const { sessions } = useContext(DataContext);
   const [summary, setSummary] = useState(null);
@@ -44,7 +45,11 @@ function Sessions() {
     const sessionIndex = 9; // Session time
     const bookIndex = 10; // Book ID
 
-    const totalPages = data.reduce((sum, row) => sum + Number(row[pagesIndex] || 0), 0);
+    const totalPages = data.reduce((sum, row) => {
+      const pages = parseInt(row[pagesIndex], 10);
+      return sum + (isNaN(pages) ? 0 : pages);
+    }, 0);
+    
     const totalSeconds = data.reduce((sum, row) => sum + durationStrToSeconds(row[sessionIndex]), 0);
     const totalSessions = data.filter((r) => r[bookIndex]).length;
     const books = [...new Set(data.map((r) => r[bookIndex]).filter(Boolean))];
@@ -113,7 +118,15 @@ function Sessions() {
                     {sessions.slice(1).map((row, i) => (
                       <tr key={i}>
                         {row.map((cell, j) => {
-                          if (j === 9 || j === 4 || j === 5) return <td key={j}>{formatDuration(cell)}</td>;
+                          if (j === 0 || j === 4 || j === 5) {
+                            const parsedDate = cell;
+                            return (
+                              <td key={j}>
+                                {parsedDate instanceof Date ? parsedDate.toLocaleString() : parsedDate}
+                              </td>
+                            );
+                          }
+                          if (j === 9) return <td key={j}>{formatDuration(cell)}</td>;
                           return <td key={j}>{cell}</td>;
                         })}
                       </tr>

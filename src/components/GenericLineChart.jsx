@@ -29,11 +29,16 @@ const GenericLineChart = ({
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={dataKeyX} />
+          <XAxis
+            dataKey={dataKeyX}
+            angle={data.length > 3 ? -Math.min(90, (data.length - 3) * 3) : 0}
+            textAnchor="middle"
+            interval={0}
+          />
           <YAxis yAxisId="left" />
           {rightAxis && <YAxis yAxisId="right" orientation="right" />} {/* 👈 add right axis if needed */}
           <Tooltip />
-          <Legend />
+          <Legend verticalAlign={ "top" }/>
 
           {lines.map((line, index) => {
             const yAxisId =

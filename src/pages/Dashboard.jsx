@@ -152,8 +152,8 @@ export default function Dashboard() {
     return [
       { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
-        ? { label: "Total Time (min)", value: totalTime.toFixed(2), change: timeChange }
-        : { label: "Total Time (hrs)", value: (totalTime / 60).toFixed(2), change: timeChange },
+        ? { label: "Total Time", value: totalTime.toFixed(2) + "min", change: timeChange }
+        : { label: "Total Time", value: (totalTime / 60).toFixed(0) + " h " + (totalTime%60) + " min", change: timeChange },
       { label: "Average Speed (pages/min)", value: avgSpeed, change: speedChange },
     ];
   }, [chartData]);
@@ -292,7 +292,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Graphs */}
           <GenericLineChart
-            book="Pages vs Time"
+            title="Pages vs Time"
             data={chartData}
             dataKeyX="timestamp"
             lines={[{ key: "pages", label: "Pages" },

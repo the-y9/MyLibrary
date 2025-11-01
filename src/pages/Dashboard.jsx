@@ -92,7 +92,7 @@ export default function Dashboard() {
           break;
         case "weekly": {
           const startOfWeek = new Date(date);
-          startOfWeek.setDate(date.getDate() - date.getDay()); // get Sunday
+          startOfWeek.setDate(date.getDate() - date.getDay() + 1); // get Monday as start of week
           key = startOfWeek.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
           break;
         }
@@ -106,7 +106,7 @@ export default function Dashboard() {
           key = date.toLocaleDateString();
       }
   
-      if (!grouped[key]) grouped[key] = { timestamp: key, pages: null, time: null, speed: null, count: null };
+      if (!grouped[key]) grouped[key] = { timestamp: key, pages: 0, time: 0, speed: 0, count: 0 };
   
       grouped[key].pages += item.pages;
       grouped[key].time += item.time;
@@ -118,7 +118,7 @@ export default function Dashboard() {
       timestamp: g.timestamp,
       pages: g.pages,
       time: g.time,
-      speed: g.count ? +(g.speed / g.count).toFixed(2) : null,
+      speed: g.count ? +(g.speed / g.count).toFixed(2) : 0,
     }));
 
     // ✅ Sort by timestamp if not guaranteed sorted
@@ -128,7 +128,6 @@ export default function Dashboard() {
     return result.slice(-10);
 
   }, [processedData, interval]);
-  
 
   const statsData = useMemo(() => {
     if (!chartData || chartData.length === 0) return [];
@@ -136,7 +135,7 @@ export default function Dashboard() {
   
     // Take the last aggregate
     const last = chartData[chartData.length - 1];
-  
+    
     const totalPages = last.pages;
     const totalTime = last.time; // in minutes
     const avgSpeed = totalTime > 0 ? +(totalPages / totalTime).toFixed(2) : 0;
@@ -211,7 +210,11 @@ export default function Dashboard() {
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-semibold">Dashboard</h2>
-            <p className="text-gray-500 text-sm">Welcome back! Here's your overview</p>
+            <p className="text-gray-500 text-sm">Overview of:&nbsp;
+              {chartData.length > 0 && (
+                <>{chartData[chartData.length - 1].timestamp}</>
+              )}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <button

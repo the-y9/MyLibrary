@@ -9,6 +9,11 @@ import GenericLineChart from '../components/GenericLineChart';
 import GenericStatsCards from '../components/GenericStatsCard';
 import GenericPieChart from '../components/GenericPieChart';
 
+const changeForm = (final, initial) => {
+  if (initial === 0) return "";
+  const change = (((final - initial) / initial) * 100).toFixed(2);
+  return change > 0 ? `+${change}%` : `${change}%`;
+};
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -134,18 +139,22 @@ export default function Dashboard() {
   // console.log(chartData);
   
     // Take the last aggregate
+    const secondLast = chartData.length > 1 ? chartData[chartData.length - 2] : null;
     const last = chartData[chartData.length - 1];
     
     const totalPages = last.pages;
     const totalTime = last.time; // in minutes
     const avgSpeed = totalTime > 0 ? +(totalPages / totalTime).toFixed(2) : 0;
+    const secLastAvgSpeed = secondLast && secondLast.time > 0 ? +(secondLast.pages / secondLast.time).toFixed(2) : 0;
   
+    const timeChange = secondLast ? changeForm(last.time, secondLast.time) : "";
+    const speedChange = secondLast ? changeForm(avgSpeed, secLastAvgSpeed) : "";
     return [
-      { label: "Total Pages Read", value: totalPages, change: "" },
+      { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
-        ? { label: "Total Time (min)", value: totalTime.toFixed(2), change: "" }
-        : { label: "Total Time (hrs)", value: (totalTime / 60).toFixed(2), change: "" },
-      { label: "Average Speed (pages/min)", value: avgSpeed, change: "" },
+        ? { label: "Total Time (min)", value: totalTime.toFixed(2), change: timeChange }
+        : { label: "Total Time (hrs)", value: (totalTime / 60).toFixed(2), change: timeChange },
+      { label: "Average Speed (pages/min)", value: avgSpeed, change: speedChange },
     ];
   }, [chartData]);
   

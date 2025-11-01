@@ -13,6 +13,7 @@ import COLORS from "./Colors.jsx";
 
 
 const GenericLineChart = ({
+  style = {},
   title = "Data Comparison",
   data = [],
   dataKeyX = "name",
@@ -23,11 +24,21 @@ const GenericLineChart = ({
   height = 250,
   rightAxis = false, // 👈 new optional prop
 }) => {
+  // Compute dynamic angle based on container width and number of data points
+  const getLabelAngle = (dataLength, containerWidth) => {
+    if (dataLength <= 3) return 0;
+    // Minimum width per label = 50px (adjustable)
+    const angle = -Math.min(90, Math.max(0, ((dataLength * 50) / containerWidth) * 45));
+    return angle;
+  };
+  
+
   return (
     <div className="bg-white p-4 rounded-xl shadow">
       <h3 className="font-semibold mb-4">{title}</h3>
       <ResponsiveContainer width="100%" height={height}>
-        <LineChart data={data}>
+        
+        <LineChart data={data} style={style}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey={dataKeyX}

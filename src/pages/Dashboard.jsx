@@ -8,6 +8,8 @@ import DataListCard from '../components/RecentTiles';
 import GenericLineChart from '../components/GenericLineChart';
 import GenericStatsCards from '../components/GenericStatsCard';
 import GenericPieChart from '../components/GenericPieChart';
+import GenericStatsCardWithChart from '../components/GenericStatsCardWithChart';
+
 
 const changeForm = (final, initial) => {
   if (initial === 0) return "";
@@ -84,12 +86,13 @@ export default function Dashboard() {
   
   const chartData = useMemo(() => {
     if (!processedData || processedData.length === 0) return [];
+  // console.log(processedData);
   
     const grouped = {};
-  
     processedData.forEach((item) => {
       const date = new Date(item.timestamp);
       let key;
+
   
       switch (interval) {
         case "daily":
@@ -111,18 +114,22 @@ export default function Dashboard() {
           key = date.toLocaleDateString();
       }
   
-      if (!grouped[key]) grouped[key] = { timestamp: key, pages: 0, time: 0, speed: 0, count: 0 };
+      if (!grouped[key]) grouped[key] = { timestamp: key, pages: 0, time: 0, speed: 0, count: 0, bookSessions: 0, uniqueBooks: new Set() };
   
       grouped[key].pages += item.pages;
       grouped[key].time += item.time;
       grouped[key].speed += item.speed;
       grouped[key].count += 1;
+      grouped[key].bookSessions += 1;
+      grouped[key].uniqueBooks.add(item.book);
     });
   
     const result = Object.values(grouped).map((g) => ({
       timestamp: g.timestamp,
+      bookSessions: g.bookSessions,
       pages: g.pages,
       time: g.time,
+      bookCount: g.uniqueBooks.size,
       speed: g.count ? +(g.speed / g.count).toFixed(2) : 0,
     }));
 
@@ -150,10 +157,12 @@ export default function Dashboard() {
     const timeChange = secondLast ? changeForm(last.time, secondLast.time) : "";
     const speedChange = secondLast ? changeForm(avgSpeed, secLastAvgSpeed) : "";
     return [
+      {label: "Sessions" , value: last.bookSessions, change: changeForm(last.bookSessions, secondLast ? secondLast.bookSessions : 0)},
       { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
         ? { label: "Total Time", value: totalTime.toFixed(2) + "min", change: timeChange }
-        : { label: "Total Time", value: (totalTime / 60).toFixed(0) + " h " + (totalTime%60) + " min", change: timeChange },
+        : { label: "Total Time", value: (totalTime / 60).toFixed(0) + " h " + (totalTime % 60) + " min", change: timeChange },
+      {label: "Books Read", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0)},
       { label: "Average Speed (pages/min)", value: avgSpeed, change: speedChange },
     ];
   }, [chartData]);
@@ -176,7 +185,7 @@ export default function Dashboard() {
           break;
         case "weekly": {
           const startOfWeek = new Date(date);
-          startOfWeek.setDate(date.getDate() - date.getDay());
+          startOfWeek.setDate(date.getDate() - date.getDay() + 1); // get Monday as start of week
           key = startOfWeek.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
           break;
         }
@@ -195,8 +204,9 @@ export default function Dashboard() {
         books[item.book] += item.pages;
       }
     });
-  
-    return Object.entries(books).map(([book, pages]) => ({ label: book, value: pages }));
+    const result = Object.entries(books).map(([book, pages]) => ({ label: book, value: pages }));
+    // console.log(result);
+    return result;
   }, [processedData, chartData, interval]);
   
   
@@ -262,7 +272,10 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <GenericStatsCards stats={statsData} />
+        {/* <div className="flex flex-wrap gap-4"> */}
+          <GenericStatsCards stats={statsData.slice(0, statsData.length -1)} />
+          <GenericStatsCardWithChart statd={statsData.slice(-1)} graphData={chartData} lineDatakey="speed"/>
+        {/* </div> */}
 
         {/* Alerts */}
         {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -297,10 +310,11 @@ export default function Dashboard() {
             dataKeyX="timestamp"
             lines={[{ key: "pages", label: "Pages" },
               { key: "time", label: "Time Spent (min)" },
-              { key: "speed", label: "Speed (pages/min)" },
+              // { key: "speed", label: "Speed (pages/min)" },
             ]}
             rightAxis={true}
           />
+          
           <GenericPieChart title="Pages Read by Book" data={pieData} />
 
           {/* Recents */}

@@ -210,11 +210,34 @@ export default function Dashboard() {
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-semibold">Dashboard</h2>
-            <p className="text-gray-500 text-sm">Overview of:&nbsp;
+            <p className="text-gray-500 text-sm">
               {chartData.length > 0 && (
-                <>{chartData[chartData.length - 1].timestamp}</>
+                <>
+                  {interval === "weekly"
+                    ? (() => {
+                        const lastDate = new Date(chartData[chartData.length - 1].timestamp);
+                        lastDate.setDate(lastDate.getDate() + 7);
+
+                        // format both start and end
+                        const startLabel = new Date(chartData[chartData.length - 1].timestamp).toLocaleDateString("default", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        });
+
+                        const endLabel = lastDate.toLocaleDateString("default", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        });
+
+                        return `${startLabel} - ${endLabel}`;
+                      })()
+                    : chartData[chartData.length - 1].timestamp}
+                </>
               )}
             </p>
+
           </div>
           <div className="flex items-center gap-2">
             <button

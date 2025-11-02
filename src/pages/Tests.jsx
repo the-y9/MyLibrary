@@ -108,7 +108,7 @@ function changeForm(current, previous) {
         {
             label: lineDatakey.toString(),
             value: last[lineDatakey].toFixed(2) || 0,
-            change: reverse
+            change: secondLast ? (reverse
                         ? changeForm(
                             secondLast ? secondLast[lineDatakey] || 0 : 0,
                             last[lineDatakey] || 0
@@ -116,7 +116,7 @@ function changeForm(current, previous) {
                         : changeForm(
                             last[lineDatakey] || 0,
                             secondLast ? secondLast[lineDatakey] || 0 : 0
-                            )
+                            )) : "",
 
           },
     ];

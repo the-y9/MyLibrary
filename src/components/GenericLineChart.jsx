@@ -22,7 +22,8 @@ const GenericLineChart = ({
     { key: "value2", color: "#3b82f6", label: "Line 2" },
   ],
   height = 250,
-  rightAxis = false, // 👈 new optional prop
+  rightAxis = false,
+  interval = "daily",
 }) => {
   // Compute dynamic angle based on container width and number of data points
   const getLabelAngle = (dataLength, containerWidth) => {
@@ -41,11 +42,33 @@ const GenericLineChart = ({
         <LineChart data={data} style={style}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
-            dataKey={dataKeyX}
+            dataKey="timestamp"
             angle={data.length > 3 ? -Math.min(90, (data.length - 3) * 3) : 0}
-            textAnchor="middle"
-            interval={0}
+            textAnchor={data.length > 3 ? "end" : "middle"}
+            tickFormatter={(value) => {
+              const date = new Date(value);
+
+              switch (interval) {
+                case "daily":
+                  return date.getDate(); // just day number, e.g., 20
+                case "weekly": {
+                  // Show week start day, e.g., "20"
+                  const startOfWeek = new Date(date);
+                  startOfWeek.setDate(date.getDate() - date.getDay() + 1);
+                  return startOfWeek.getDate();
+                }
+                case "monthly":
+                  return date.toLocaleString("default", { month: "short" }); // e.g., "Oct"
+                case "yearly":
+                  return date.getFullYear(); // e.g., 2025
+                default:
+                  return date.toLocaleDateString(); // fallback
+              }
+            }}
+            interval={0} // ensures every tick is shown, you can tweak this for spacing
           />
+          
+
           <YAxis yAxisId="left" />
           {rightAxis && <YAxis yAxisId="right" orientation="right" />} {/* 👈 add right axis if needed */}
           <Tooltip />

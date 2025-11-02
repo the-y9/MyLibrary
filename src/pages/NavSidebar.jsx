@@ -4,6 +4,7 @@ const navItems = [
   { name: 'Dashboard', path: '/' },
   { name: 'Sessions', path: '/sessions' },
   { name: 'Books', path: '/books' },
+  { name: 'Tests', path: '/tests' },
   { name: 'Analytics' } // No path means it's not a link
 ];
 

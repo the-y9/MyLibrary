@@ -10,7 +10,7 @@ import GenericStatsCards from '../components/GenericStatsCard';
 import GenericPieChart from '../components/GenericPieChart';
 import GenericStatsCardWithChart from '../components/GenericStatsCardWithChart';
 
-
+const dateForm = "default"; 
 const changeForm = (final, initial) => {
   if (initial === 0) return "";
   const change = (((final - initial) / initial) * 100).toFixed(2);
@@ -67,7 +67,7 @@ export default function Dashboard() {
 
     return top3.map((item) => {
       const date = new Date(item.timestamp);
-      const formattedDate = date.toLocaleDateString("default", {
+      const formattedDate = date.toLocaleDateString(dateForm, {
         month: "short",
         day: "numeric",
         year: "numeric",
@@ -86,44 +86,44 @@ export default function Dashboard() {
   
   const chartData = useMemo(() => {
     if (!processedData || processedData.length === 0) return [];
-  // console.log(processedData);
   
     const grouped = {};
     processedData.forEach((item) => {
       const date = new Date(item.timestamp);
       let key;
-
   
       switch (interval) {
         case "daily":
-          key = date.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          key = date.toLocaleDateString(dateForm, { month: "short", day: "numeric", year: "numeric" });
           break;
         case "weekly": {
           const startOfWeek = new Date(date);
-          startOfWeek.setDate(date.getDate() - date.getDay() + 1); // get Monday as start of week
-          key = startOfWeek.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          startOfWeek.setDate(date.getDate() - date.getDay() + 1); // Monday
+          key = startOfWeek.toLocaleDateString(dateForm, { month: "short", day: "numeric", year: "numeric" });
           break;
         }
         case "monthly":
-          key = date.toLocaleDateString("default", { month: "short", year: "numeric" });
+          key = date.toLocaleDateString(dateForm, { month: "short", year: "numeric" });
           break;
         case "yearly":
-          key = date.getFullYear();
+          key = String(date.getFullYear());
           break;
         default:
           key = date.toLocaleDateString();
       }
   
-      if (!grouped[key]) grouped[key] = { timestamp: key, pages: 0, time: 0, speed: 0, count: 0, bookSessions: 0, uniqueBooks: new Set() };
+      if (!grouped[key])
+        grouped[key] = { timestamp: key, pages: 0, time: 0, speed: 0, count: 0, bookSessions: 0, uniqueBooks: new Set() };
   
-      grouped[key].pages += item.pages;
-      grouped[key].time += item.time;
-      grouped[key].speed += item.speed;
+      grouped[key].pages += Number(item.pages) || 0;
+      grouped[key].time += Number(item.time) || 0;
+      grouped[key].speed += item.speed || 0;
       grouped[key].count += 1;
       grouped[key].bookSessions += 1;
       grouped[key].uniqueBooks.add(item.book);
     });
   
+    // Turn into array
     const result = Object.values(grouped).map((g) => ({
       timestamp: g.timestamp,
       bookSessions: g.bookSessions,
@@ -132,15 +132,74 @@ export default function Dashboard() {
       bookCount: g.uniqueBooks.size,
       speed: g.count ? +(g.speed / g.count).toFixed(2) : 0,
     }));
-
-    // ✅ Sort by timestamp if not guaranteed sorted
+  
     result.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-    // ✅ Keep only last 10 intervals
-    return result.slice(-10);
-
+  
+    // --- 🧩 Fill missing intervals with zero values ---
+    const filled = [];
+  
+    if (result.length > 0) {
+      const startDate = new Date(result[0].timestamp);
+      const endDate = new Date(); // always up to today
+  
+      const addInterval = (d) => {
+        switch (interval) {
+          case "daily":
+            d.setDate(d.getDate() + 1);
+            break;
+          case "weekly":
+            d.setDate(d.getDate() + 7);
+            break;
+          case "monthly":
+            d.setMonth(d.getMonth() + 1);
+            break;
+          case "yearly":
+            d.setFullYear(d.getFullYear() + 1);
+            break;
+          default:
+            d.setDate(d.getDate() + 1);
+        }
+      };
+  
+      for (let d = new Date(startDate); d <= endDate; addInterval(d)) {
+        let key;
+        switch (interval) {
+          case "daily":
+            key = d.toLocaleDateString(dateForm, { month: "short", day: "numeric", year: "numeric" });
+            break;
+          case "weekly": {
+            const startOfWeek = new Date(d);
+            startOfWeek.setDate(d.getDate() - d.getDay() + 1);
+            key = startOfWeek.toLocaleDateString(dateForm, { month: "short", day: "numeric", year: "numeric" });
+            break;
+          }
+          case "monthly":
+            key = d.toLocaleDateString(dateForm, { month: "short", year: "numeric" });
+            break;
+          case "yearly":
+            key = String(d.getFullYear());
+            break;
+          default:
+            key = d.toLocaleDateString();
+        }
+  
+        const found = result.find((r) => r.timestamp === key);
+        filled.push(
+          found || {
+            timestamp: key,
+            bookSessions: 0,
+            pages: 0,
+            time: 0,
+            bookCount: 0,
+            speed: 0,
+          }
+        );
+      }
+    }
+  
+    return filled.slice(-10);
   }, [processedData, interval]);
-
+  
   const statsData = useMemo(() => {
     if (!chartData || chartData.length === 0) return [];
   // console.log(chartData);
@@ -181,16 +240,16 @@ export default function Dashboard() {
   
       switch(interval) {
         case "daily":
-          key = date.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          key = date.toLocaleDateString(dateForm, { month: "short", day: "numeric", year: "numeric" });
           break;
         case "weekly": {
           const startOfWeek = new Date(date);
           startOfWeek.setDate(date.getDate() - date.getDay() + 1); // get Monday as start of week
-          key = startOfWeek.toLocaleDateString("default", { month: "short", day: "numeric", year: "numeric" });
+          key = startOfWeek.toLocaleDateString(dateForm, { month: "short", day: "numeric", year: "numeric" });
           break;
         }
         case "monthly":
-          key = date.toLocaleDateString("default", { month: "short", year: "numeric" });
+          key = date.toLocaleDateString(dateForm, { month: "short", year: "numeric" });
           break;
         case "yearly":
           key = date.getFullYear();
@@ -208,7 +267,6 @@ export default function Dashboard() {
     // console.log(result);
     return result;
   }, [processedData, chartData, interval]);
-  
   
     
   return (
@@ -238,13 +296,13 @@ export default function Dashboard() {
                         lastDate.setDate(lastDate.getDate() + 7);
 
                         // format both start and end
-                        const startLabel = new Date(chartData[chartData.length - 1].timestamp).toLocaleDateString("default", {
+                        const startLabel = new Date(chartData[chartData.length - 1].timestamp).toLocaleDateString(dateForm, {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
                         });
 
-                        const endLabel = lastDate.toLocaleDateString("default", {
+                        const endLabel = lastDate.toLocaleDateString(dateForm, {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
@@ -313,6 +371,7 @@ export default function Dashboard() {
               // { key: "speed", label: "Speed (pages/min)" },
             ]}
             rightAxis={true}
+            interval={interval}
           />
           
           <GenericPieChart title="Pages Read by Book" data={pieData} />

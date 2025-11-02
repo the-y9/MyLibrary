@@ -40,7 +40,10 @@ function Sessions() {
     return formatSeconds(totalSeconds);
   };
 
-  const computeSummary = (data) => {
+  const computeSummary = (adata) => {
+    const data = adata.slice(1); // Exclude header row
+    // console.log(data);
+    
     const pagesIndex = 8;  // Pages read
     const sessionIndex = 9; // Session time
     const bookIndex = 10; // Book ID

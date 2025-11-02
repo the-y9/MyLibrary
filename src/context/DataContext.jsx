@@ -4,7 +4,12 @@ import axios from "axios";
 export const DataContext = createContext();
 
 const SHEET_ID = "1HzHupzGxFMqQjtz0ZsVEHZgD87MiEk-VJcg0OrIfUio";
-const SESSIONS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+// const SESSIONS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const SESSIONS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=${encodeURIComponent(
+  "select * order by A desc limit 10000"
+)}`;
+
+
 const BOOKS_MASTER_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0`;
 
 const parseExcelDate = (dateStr) => {

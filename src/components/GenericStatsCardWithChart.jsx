@@ -1,7 +1,8 @@
 import { LineChart, Line, Tooltip, XAxis } from "recharts";
 
-const GenericStatsCardWithChart = ({ statd = [], graphData = [], lineDatakey, chartStyle = { width: "100%", maxWidth: "200px", maxHeight: "100px", aspectRatio: 1.618 } }) => {
+const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "timestamp", lineDatakey, chartStyle = { width: "100%", maxWidth: "200px", maxHeight: "100px", aspectRatio: 1.618 } }) => {
     const stat = statd[0]; // could be undefined if array is empty
+    
 
     return (
         <div className="bg-white p-4 rounded-xl shadow flex justify-between max-w-sm">
@@ -26,7 +27,7 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], lineDatakey, ch
                 style={chartStyle}
                 data={graphData}
             >
-                <XAxis dataKey="timestamp" hide />
+                <XAxis dataKey={xaxisKey} hide />
                 <Tooltip />
                 <Line type="monotone" dataKey={lineDatakey} stroke="#8884d8" strokeWidth={2} />
             </LineChart>

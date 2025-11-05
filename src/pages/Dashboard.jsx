@@ -78,7 +78,7 @@ export default function Dashboard() {
         id: item.timestamp, // fallback to timestamp if id missing
         label: item.chapter ?? "Chapter",
         subtitle: `${item.book} · ${formattedDate}`,
-        value: `${item.pages} pages · ${item.time.toFixed(2)} min`,
+        value: `${item.pages} pages · ${item.time.toFixed(2)} min · ${(item.pages/item.time).toFixed(2)} p/m`,
         status: item.status || "Pending",
       };
     });

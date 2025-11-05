@@ -71,7 +71,23 @@ const GenericLineChart = ({
 
           <YAxis yAxisId="left" />
           {rightAxis && <YAxis yAxisId="right" orientation="right" />} {/* 👈 add right axis if needed */}
-          <Tooltip />
+          
+          <Tooltip
+              formatter={(value, name, props) => {
+              if (props.dataKey === "time" || props.dataKey === "totalTime") {
+                const totalTime = Math.floor(value);
+                if (totalTime < 60) {
+                  return [`${totalTime} min`, name]; // [formattedValue, label]
+                } else {
+                  const hours = Math.floor(totalTime / 60);
+                  const minutes = totalTime % 60;
+                  return [`${hours} h ${minutes} min`, name]; // [formattedValue, label]
+                }
+}
+                return [value, name]; // default for everything else
+              }}
+            />
+
           <Legend verticalAlign={ "top" }/>
 
           {lines.map((line, index) => {

@@ -293,7 +293,7 @@ export default function Dashboard() {
                   {interval === "weekly"
                     ? (() => {
                         const lastDate = new Date(chartData[chartData.length - 1].timestamp);
-                        lastDate.setDate(lastDate.getDate() + 7);
+                        lastDate.setDate(lastDate.getDate() + 6);
 
                         // format both start and end
                         const startLabel = new Date(chartData[chartData.length - 1].timestamp).toLocaleDateString(dateForm, {

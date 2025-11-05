@@ -55,7 +55,7 @@ const GenericLineChart = ({
                   // Show week start day, e.g., "20"
                   const startOfWeek = new Date(date);
                   startOfWeek.setDate(date.getDate() - date.getDay() + 1);
-                  return startOfWeek.getDate();
+                  return `${startOfWeek.getDate()} - ${startOfWeek.getDate() + 6}`; // e.g., "20 - 26"
                 }
                 case "monthly":
                   return date.toLocaleString("default", { month: "short" }); // e.g., "Oct"

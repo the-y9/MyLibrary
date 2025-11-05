@@ -1,33 +1,84 @@
+/* General app styles */
 .App {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  background-color: #f7f9fc;
+  color: #333;
+}
+
+/* Summary box */
+.summary {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Table container */
+.table-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  margin-top: 20px;
+  width: 78vw;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+/* Table header */
+th {
+background: #3b82f6;
+
+  color: white;
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+/* Table cells */
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #444;
+}
+
+/* Zebra striping */
+tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Hover effect */
+tr:hover {
+  background-color: #eef2ff;
+  transition: background 0.2s ease;
+}
+
+/* Rounded corners for top of table */
+table thead tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+}
+table thead tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Make text look consistent */
+th, td {
+  vertical-align: middle;
+}
+
+/* Responsive tweak */
+@media (max-width: 768px) {
+  th, td {
+    padding: 10px;
+    font-size: 0.9rem;
   }
-  
-  .summary {
-    background: #f9f9f9;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th {
-    background: #4CAF50;
-    color: white;
-    padding: 8px;
-  }
-  
-  td {
-    padding: 8px;
-    border: 1px solid #ddd;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
+}

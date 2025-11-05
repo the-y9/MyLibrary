@@ -220,7 +220,7 @@ export default function Dashboard() {
       { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
         ? { label: "Total Time", value: totalTime.toFixed(2) + "min", change: timeChange }
-        : { label: "Total Time", value: (totalTime / 60).toFixed(0) + " h " + (totalTime % 60) + " min", change: timeChange },
+        : { label: "Total Time", value: Math.floor(totalTime / 60) + " h " + (totalTime % 60) + " min", change: timeChange },
       {label: "Books Read", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0)},
       { label: "Average Speed (pages/min)", value: avgSpeed, change: speedChange },
     ];

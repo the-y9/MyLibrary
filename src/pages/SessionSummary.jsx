@@ -5,15 +5,17 @@ import { Menu } from 'lucide-react';
 import { Link } from "react-router-dom";
 import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
-
+import SearchAndFilters from '../components/SearchAndFilters';
 
 function Sessions() {
   const { sessions } = useContext(DataContext);
+  const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [summary, setSummary] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (sessions) {
+      setFilteredSessions(sessions);
       computeSummary(sessions);
     }
   }, [sessions]);
@@ -102,32 +104,49 @@ function Sessions() {
           </div>
         </div>
         <div className="app">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex-1">
                 {summary && (
-                  <div className="summary">
+                  <div className="p-4 bg-white rounded-lg shadow">
                     <p><strong>Total Pages Read:</strong> {summary.totalPages}</p>
                     <p><strong>Total Sessions:</strong> {summary.totalSessions}</p>
                     <p><strong>Books Read:</strong> {summary.totalBooks}</p>
                     <p><strong>Total Reading Time:</strong> {summary.totalTime}</p>
                   </div>
-                )}
+              )}
+            </div>
+            <div className="flex-1">
+                <SearchAndFilters data={sessions} onFilter={setFilteredSessions} />
+            </div>
+          </div>
+          <div className="table-container overflow-x-auto bg-white rounded-lg shadow">
 
                 <table>
                   <thead>
-                    <tr>
-                      {sessions[0].map((header, i) => <th key={i}>{header}</th>)}
+                <tr>
+                  {filteredSessions &&
+                    filteredSessions[0].map((header, i) => <th key={i}>{header}</th>)}
                     </tr>
                   </thead>
                   <tbody>
-                    {sessions.slice(1).map((row, i) => (
+                {filteredSessions &&
+                  filteredSessions.slice(1).map((row, i) => (
                       <tr key={i}>
                         {row.map((cell, j) => {
                           if (j === 0 || j === 4 || j === 5) {
-                            const parsedDate = cell;
-                            return (
-                              <td key={j}>
-                                {parsedDate instanceof Date ? parsedDate.toLocaleString() : parsedDate}
-                              </td>
-                            );
+                            const parsedDate = new Date(cell);
+                          
+                            if (isNaN(parsedDate)) {
+                              return <td key={j}>{cell}</td>; // fallback if not a valid date
+                            }
+                          
+                            // Show full date+time for j === 0, and time only for j === 4 or j === 5
+                            const displayValue =
+                              j === 0
+                                ? parsedDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) // e.g. "Jan 1, 2023
+                                : parsedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // e.g. "3:45 PM"
+                          
+                            return <td key={j}>{displayValue}</td>;
                           }
                           if (j === 9) return <td key={j}>{formatDuration(cell)}</td>;
                           return <td key={j}>{cell}</td>;
@@ -135,8 +154,9 @@ function Sessions() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
-                </div>  
+            </table>
+          </div>
+        </div>  
       </main >
     </div>
   );

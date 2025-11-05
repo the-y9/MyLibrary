@@ -1,4 +1,5 @@
 import { LineChart, Line, Tooltip, XAxis } from "recharts";
+import COLORS from "./Colors"
 
 const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "timestamp", lineDatakey, chartStyle = { width: "100%", maxWidth: "200px", maxHeight: "100px", aspectRatio: 1.618 } }) => {
     const stat = statd[0]; // could be undefined if array is empty
@@ -29,7 +30,7 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
             >
                 <XAxis dataKey={xaxisKey} hide />
                 <Tooltip />
-                <Line type="monotone" dataKey={lineDatakey} stroke="#8884d8" strokeWidth={2} />
+                <Line type="monotone" dataKey={lineDatakey} stroke={COLORS[9]} strokeWidth={2} />
             </LineChart>
 
             

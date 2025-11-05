@@ -175,13 +175,13 @@ const  quicknessData = useChartData(tests, "Quickness", interval);
 
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <GenericStatsCardWithChart statd={accuracyStats}  graphData={accuracyData} lineDatakey="Accuracy %" // xaxisKey="" 
+          <GenericStatsCardWithChart statd={accuracyStats}  graphData={accuracyData} lineDatakey="Accuracy %" CI={7}
         />
-        <GenericStatsCardWithChart statd={readinessStats}  graphData={readinessData} lineDatakey="Readiness" //   xaxisKey=""  
+        <GenericStatsCardWithChart statd={readinessStats}  graphData={readinessData} lineDatakey="Readiness" CI={8} //   xaxisKey=""  
                       />
-        <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" //   xaxisKey=""  
+        <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" CI={10}//   xaxisKey=""  
                       />
-                      <GenericStatsCardWithChart statd={quicknessStats}  graphData={quicknessData} lineDatakey="Quickness" //   xaxisKey=""  
+                      <GenericStatsCardWithChart statd={quicknessStats}  graphData={quicknessData} lineDatakey="Quickness" CI={11}//   xaxisKey=""  
         />
                   </div>
                   <div className="flex gap-2 mb-4">

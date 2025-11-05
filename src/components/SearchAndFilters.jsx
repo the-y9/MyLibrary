@@ -20,7 +20,7 @@ function SearchAndFilter({ data = [], onFilter }) {
   // Reset filter whenever data changes
   useEffect(() => {
     if (data && data.length > 0) onFilter(data);
-  }, [data]);
+  }, [data, onFilter]);
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();

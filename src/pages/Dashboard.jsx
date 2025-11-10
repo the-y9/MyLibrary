@@ -275,7 +275,7 @@ export default function Dashboard() {
               setSidebarOpen={setSidebarOpen}
               title="Library"
               navComponent={NavSidebar}
-              footerContent="👤 Profile Settings"
+              footerContent="Profile Settings"
               width="w-72"
               bgColor="bg-gray-50"
               borderColor="border-gray-200"

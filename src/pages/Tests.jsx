@@ -129,14 +129,18 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
     const { refresh, setRefresh } = useContext(TestDataContext);
 
   const accuracyData = useChartData(tests, "Accuracy %", interval);
-    const readinessData = useChartData(tests, "Readiness", interval);
-    const scoreData = useChartData(tests, "Score %", interval);
-const  quicknessData = useChartData(tests, "Quickness", interval);
+  const readinessData = useChartData(tests, "Readiness", interval);
+  const scoreData = useChartData(tests, "Score %", interval);
+  const quicknessData = useChartData(tests, "Quickness", interval);
+  const prindexData = useChartData(tests, "PRIndex", interval);
+  const preindexData = useChartData(tests, "PREIndex", interval);
 
   const accuracyStats = useStatsData(accuracyData, "Accuracy %");
-    const readinessStats = useStatsData(readinessData, "Readiness");
-    const scoreStats = useStatsData(scoreData, "Score %");
-    const quicknessStats = useStatsData( quicknessData, "Quickness", "reverse");
+  const readinessStats = useStatsData(readinessData, "Readiness");
+  const scoreStats = useStatsData(scoreData, "Score %");
+  const quicknessStats = useStatsData(quicknessData, "Quickness", "reverse");
+  const prindexStats = useStatsData(prindexData, "PRIndex");
+  const preindexStats = useStatsData(preindexData, "PREIndex");
     
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -145,7 +149,7 @@ const  quicknessData = useChartData(tests, "Quickness", interval);
         setSidebarOpen={setSidebarOpen}
         title="Library"
         navComponent={NavSidebar}
-        footerContent="👤 Profile Settings"
+        footerContent="Profile Settings"
         width="w-72"
         bgColor="bg-gray-50"
         borderColor="border-gray-200"
@@ -164,26 +168,25 @@ const  quicknessData = useChartData(tests, "Quickness", interval);
             >
               <Menu size={22} />
                       </button>
-                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                      <button onClick={() => setRefresh(c => c + 1)}>
+                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" onClick={() => setRefresh(c => c + 1)}>
                         {refresh === 0 ? "Refresh Data" : `Refreshed ${refresh} time${refresh === 1 ? '' : 's'}`}
                        </button>
-                          
-            </button>
+                      
           </div>
         </div>
 
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <GenericStatsCardWithChart statd={accuracyStats}  graphData={accuracyData} lineDatakey="Accuracy %" CI={7}
-        />
-        <GenericStatsCardWithChart statd={readinessStats}  graphData={readinessData} lineDatakey="Readiness" CI={8} //   xaxisKey=""  
-                      />
-        <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" CI={10}//   xaxisKey=""  
-                      />
-                      <GenericStatsCardWithChart statd={quicknessStats}  graphData={quicknessData} lineDatakey="Quickness" CI={11}//   xaxisKey=""  
-        />
-                  </div>
+            <GenericStatsCardWithChart statd={accuracyStats}  graphData={accuracyData} lineDatakey="Accuracy %" CI={7}/>
+            <GenericStatsCardWithChart statd={readinessStats}  graphData={readinessData} lineDatakey="Readiness" CI={8} />
+            <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" CI={10} />
+            <GenericStatsCardWithChart statd={quicknessStats} graphData={quicknessData} lineDatakey="Quickness" CI={11} />  
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
+            <GenericStatsCardWithChart statd={prindexStats}  graphData={prindexData} lineDatakey="PRIndex" CI={12} />
+            <GenericStatsCardWithChart statd={preindexStats} graphData={preindexData} lineDatakey="PREIndex" CI={13} />  
+          </div>
+          
                   <div className="flex gap-2 mb-4">
                     {["daily", "weekly", "monthly", "yearly"].map((option) => (
                         <button

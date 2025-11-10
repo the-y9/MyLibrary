@@ -41,7 +41,7 @@ export default function Sidebar({
             </div>
             {NavComponent && <NavComponent />}
           </div>
-          <div className={`text-sm mt-6 md:mt-0 ${footerTextColor}`}>{footerContent}</div>
+          {/* <div className={`text-sm mt-6 md:mt-0 ${footerTextColor}`}>{footerContent}</div> */}
         </aside>
   
         {/* Overlay for mobile */}

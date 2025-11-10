@@ -54,8 +54,9 @@ export const TestDataProvider = ({ children }) => {
       // Indices of columns that should be treated as numbers
       const numericCols = [
         "Total Qs", "Reward", "Penalty", "Attempted", "Correct", "Wrong", "Unattempted",
-        "Score", "Score %", "Accuracy %", "Time (min)", "Readiness", "Quickness", "Polity",
-        "History", "Geography", "Economy", "Environment & Ecology",
+        "Score", "Score %", "Accuracy %", "Time (min)", "Readiness", "Quickness",
+        "PRIndex", "PREIndex",
+        "Polity", "History", "Geography", "Economy", "Environment & Ecology",
         "Science & Tech", "Current Affairs", "Miscellaneous", 
       ];
       const numericIndices = numericCols.map((col) => headerRow.indexOf(col)).filter(i => i >= 0);

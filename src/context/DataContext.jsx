@@ -35,33 +35,46 @@ export const DataProvider = ({ children }) => {
   };
 
   const fetchBooksMaster = async () => {
+    // 1. Load cached version immediately (for instant UI)
     const cached = localStorage.getItem("books");
+    let cachedData = null;
+  
     if (cached) {
-        const parsed = JSON.parse(cached);
-        setBooks(parsed); // <-- set state here too
-        return parsed;
+      cachedData = JSON.parse(cached);
+      setBooks(cachedData);
+    }
+  
+    // 2. Always try to fetch fresh data in background
+    try {
+      const res = await axios.get(BOOKS_MASTER_URL);
+      const rows = parseGviz(res.data);
+  
+      const data = rows.map((r) => {
+        const cells = r.c.map((c) => (c ? c.v : ""));
+        return {
+          bookId: cells[0],
+          bookTitle: cells[1],
+          totalPages: Number(cells[8] || 0),
+        };
+      });
+  
+      const lookup = {};
+      data.forEach((b) => (lookup[b.bookId] = b));
+  
+      // 3. Only update state/localStorage if data changed
+      const freshDataStr = JSON.stringify(lookup);
+      if (freshDataStr !== cached) {
+        localStorage.setItem("books", freshDataStr);
+        setBooks(lookup);
       }
-
-    const res = await axios.get(BOOKS_MASTER_URL);
-    const rows = parseGviz(res.data);
-
-    const data = rows.map((r) => {
-      const cells = r.c.map((c) => (c ? c.v : ""));
-      return {
-        bookId: cells[0],
-        bookTitle: cells[1],
-        totalPages: Number(cells[8] || 0),
-      };
-    });
-
-    const lookup = {};
-    data.forEach((b) => (lookup[b.bookId] = b));
-
-    localStorage.setItem("books", JSON.stringify(lookup));
-    setBooks(lookup);
-
-    return lookup;
+  
+      return lookup;
+    } catch (err) {
+      console.error("Error fetching books:", err);
+      return cachedData;
+    }
   };
+  
 
   const fetchSessionsAndCompute = async () => {
     try {

@@ -120,7 +120,7 @@ function changeForm(current, previous) {
 
           },
     ];
-  }, [chartData, lineDatakey]);
+  }, [chartData, lineDatakey, reverse]);
 }
 
   

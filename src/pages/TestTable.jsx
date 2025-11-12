@@ -14,7 +14,7 @@ function TestTable({ visibleHeaders = []}) {
     .filter((i) => i !== -1);
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-x-auto">
+    <div className="bg-card rounded-lg shadow overflow-x-auto">
       <table className="min-w-full text-sm text-left">
         <thead className="bg-gray-100 text-gray-700">
           <tr>
@@ -40,10 +40,10 @@ function TestTable({ visibleHeaders = []}) {
           {tests.rows.map((row) => (
             <tr
               key={row.key}
-              className="border-t hover:bg-gray-50 transition"
+              className="border-border hover:bg-background transition "
             >
               {visibleIndexes.map((i) => (
-                <td key={i} className="px-4 py-2">
+                <td key={i} className="px-4 py-2 text-foreground">
                   {row.data[i] instanceof Date
                     ? row.data[i].toLocaleDateString()
                     : row.data[i]}

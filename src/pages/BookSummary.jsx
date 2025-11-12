@@ -116,18 +116,11 @@ const BookSummary = () => {
   // 🖼️ Render
   // -------------------------------
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background">
       <SideBar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        title="Library"
         navComponent={NavSidebar}
-        footerContent="Profile Settings"
-        width="w-72"
-        bgColor="bg-gray-50"
-        borderColor="border-gray-200"
-        textColor="text-blue-700"
-        footerTextColor="text-gray-600"
       />
 
       <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
@@ -149,7 +142,7 @@ const BookSummary = () => {
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1">
             {totals && (
-              <div className="p-4 bg-white rounded-lg shadow">
+              <div className="p-4 bg-card rounded-lg shadow">
                 <p>
                   <strong>Total Pages Read:</strong> {totals.totalPages}
                 </p>
@@ -169,7 +162,7 @@ const BookSummary = () => {
           </div>
         </div>
 
-        <div className="table-container overflow-x-auto bg-white rounded-lg shadow">
+        <div className="table-container overflow-x-auto bg-card rounded-lg shadow">
           <table>
             <thead>
               <tr>

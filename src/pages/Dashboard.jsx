@@ -270,24 +270,24 @@ export default function Dashboard() {
   
     
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background text-foreground transition-colors duration-300">
      <SideBar sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
               title="Library"
               navComponent={NavSidebar}
               footerContent="Profile Settings"
               width="w-72"
-              bgColor="bg-gray-50"
-              borderColor="border-gray-200"
-              textColor="text-blue-700"
-              footerTextColor="text-gray-600" />
+              bgColor="bg-card"
+              borderColor="border-border"
+              textColor="text-foreground"
+              footerTextColor="text-muted-foreground" />
 
       {/* Main content */}
       <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-semibold">Dashboard</h2>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground-500 text-sm">
               {chartData.length > 0 && (
                 <>
                   {interval === "weekly"

@@ -1,15 +1,20 @@
+import useTheme from "../hooks/useTheme";
+import AnimatedThemeToggle from "./ThemeToggle";
+
 export default function Sidebar({
     sidebarOpen,
     setSidebarOpen,
     title = "Library",
     navComponent: NavComponent,
     footerContent = "⚙️ Settings",
-    width = "w-64",
-    bgColor = "bg-white",
-    borderColor = "border-r",
-    textColor = "text-green-700",
-    footerTextColor = "text-gray-500",
-  }) {
+    width = "w-72",
+    bgColor = "bg-card",
+    borderColor = "border-border",
+    textColor = "text-foreground",
+    footerTextColor = "text-muted-foreground",
+}) {
+  
+  const [theme, setTheme] = useTheme();
     return (
       <>
         {/* Sidebar */}
@@ -21,6 +26,13 @@ export default function Sidebar({
           <div>
             <div className="flex justify-between items-center mb-6">
               <h1 className={`text-xl font-semibold ${textColor}`}>{title}</h1>
+              <AnimatedThemeToggle />
+              {/* <button
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                className="mt-6 px-4 py-2 rounded-md border border-border bg-card text-card-foreground hover-elevate transition-all"
+              >
+                Toggle {theme === "light" ? "Dark" : "Light"} Mode
+              </button> */}
               <button
                 className="md:hidden text-gray-600"
                 onClick={() => setSidebarOpen(false)}

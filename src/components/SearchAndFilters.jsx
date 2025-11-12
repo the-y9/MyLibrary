@@ -76,17 +76,17 @@ function SearchAndFilter({ data = [], onFilter }) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded-lg shadow">
+    <div className="flex flex-col md:flex-row items-center gap-4 bg-card p-4 rounded-lg shadow">
       <input
         type="text"
         placeholder="Search..."
-        className="border p-2 rounded w-full md:w-1/2"
+        className="border p-2 rounded w-full md:w-1/2 bg-card"
         value={searchQuery}
         onChange={handleSearch}
       />
 
       <select
-        className="border p-2 rounded w-full md:w-1/4"
+        className="border p-2 rounded w-full md:w-1/4 bg-card"
         value={columnFilter}
         onChange={handleColumnChange}
       >

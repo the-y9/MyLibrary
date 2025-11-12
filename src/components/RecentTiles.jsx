@@ -1,6 +1,6 @@
 const DataListCard = ({ title = "Recent Items", items = [], keyField, label, subtitle, value, status }) => {
     return (
-      <div className="bg-white p-4 rounded-xl shadow">
+      <div className="bg-card p-4 rounded-xl shadow">
         <h3 className="font-semibold mb-4">{title}</h3>
         <div className="space-y-3">
           {items.map((item, index) => (

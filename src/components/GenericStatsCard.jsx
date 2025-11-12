@@ -4,10 +4,10 @@ const GenericStatsCards = ({ stats = [] }) => {
         {stats.map((item, index) => (
           <div
             key={index}
-            className="bg-white p-4 rounded-xl shadow flex flex-col justify-between"
+            className="bg-card p-4 rounded-xl shadow flex flex-col justify-between"
           >
             <p className="text-sm text-gray-500">{item.label}</p>
-            <h3 className="text-2xl font-bold">{item.value}</h3>
+            <h3 className="text-2xl font-bold text-foreground">{item.value}</h3>
   
             {item.change && (
               <p

@@ -143,18 +143,11 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
   const preindexStats = useStatsData(preindexData, "PREIndex");
     
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background">
       <SideBar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        title="Library"
         navComponent={NavSidebar}
-        footerContent="Profile Settings"
-        width="w-72"
-        bgColor="bg-gray-50"
-        borderColor="border-gray-200"
-        textColor="text-blue-700"
-        footerTextColor="text-gray-600"
       />
       <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
         <div className="flex justify-between items-center">

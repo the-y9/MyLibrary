@@ -1,31 +1,33 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
-  { name: 'Dashboard', path: '/' },
-  { name: 'Sessions', path: '/sessions' },
-  { name: 'Books', path: '/books' },
-  { name: 'Tests', path: '/tests' },
-  // { name: 'Analytics' } // No path means it's not a link
+  { name: "Dashboard", path: "/" },
+  { name: "Sessions", path: "/sessions" },
+  { name: "Books", path: "/books" },
+  { name: "Tests", path: "/tests" },
 ];
 
 export default function Sidebar() {
-  const location = useLocation(); // Get current path
+  const location = useLocation();
 
   return (
-    <nav className="space-y-2">
+    <nav className="space-y-1">
       {navItems.map((item) => {
         const isActive = item.path === location.pathname;
+
         return (
-          <div
+          <Link
             key={item.name}
-            className={`p-2 rounded-md cursor-pointer ${
-              isActive
-                ? "bg-blue-100 text-blue-700 font-semibold" // active page style
-                : "text-gray-700 hover:bg-blue-50"
-            }`}
+            to={item.path}
+            className={`block px-3 py-2 rounded-md transition-colors duration-200
+              ${
+                isActive
+                  ? "bg-accent text-accent-foreground font-medium border border-border"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
           >
-            {item.path ? <Link to={item.path}>{item.name}</Link> : item.name}
-          </div>
+            {item.name}
+          </Link>
         );
       })}
     </nav>

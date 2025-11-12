@@ -6,12 +6,12 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
     
 
     return (
-        <div className="bg-white p-4 rounded-xl shadow flex justify-between max-w-sm">
+        <div className="bg-card p-4 rounded-xl shadow flex justify-between max-w-sm">
             <div id="stattext">
                 {stat ? (
                     <>
                         {stat.label && <p className="text-sm text-gray-500">{stat.label}</p>}
-                        {stat.value && <h3 className="text-2xl font-bold">{stat.value}</h3>}
+                        {stat.value && <h3 className="text-2xl font-bold text-foreground">{stat.value}</h3>}
                         {stat.change && (
                             <p className={`text-sm ${stat.change.startsWith("-") ? "text-red-500" : "text-green-500"}`}>
                                 {stat.change}

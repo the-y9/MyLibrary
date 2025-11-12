@@ -18,9 +18,9 @@ const DataListCard = ({ title = "Recent Items", items = [], keyField, label, sub
               {item[status] && (
                 <span
                   className={`px-3 py-1 rounded-full text-sm ${
-                    item[status].toLowerCase() === "completed"
+                    item[status].trim().toLowerCase() === "completed"
                       ? "bg-green-100 text-green-600"
-                      : item[status].toLowerCase() === "pending"
+                      : item[status].trim().toLowerCase() === "pending"
                       ? "bg-yellow-100 text-yellow-600"
                       : "bg-gray-100 text-gray-600"
                   }`}

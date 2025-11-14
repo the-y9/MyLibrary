@@ -11,6 +11,41 @@ import {
 } from "recharts";
 import COLORS from "./Colors.jsx";
 
+const CustomTooltip = ({ active, payload, label, formatter }) => {
+  if (!active || !payload || payload.length === 0) return null;
+
+  return (
+    <div className="p-3 rounded-lg shadow-lg bg-card border border-border">
+      <p className="text-xs mb-1">{label}</p>
+
+      {payload.map((entry, index) => {
+        const [formattedValue] = formatter
+          ? formatter(entry.value, entry.name, entry)
+          : [entry.value];
+
+        return (
+          <div key={index} className="flex items-center gap-2 mb-1">
+            {/* color indicator */}
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+
+            {/* label + value */}
+            <p
+              className="text-sm font-semibold text-foreground"
+              style={{ color: entry.color }} // dynamically color text to line color
+            >
+              {entry.name}: {formattedValue}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+
 const GenericLineChart = ({
   style = {},
   title = "Data Comparison",
@@ -97,11 +132,9 @@ const GenericLineChart = ({
 
           <Tooltip
             formatter={tooltipFormatter}
-            contentStyle={{
-              backgroundColor: isDark ? "#1f2937" : "#fff",
-              borderColor: isDark ? "#4b5563" : "#e5e7eb",
-              color: isDark ? "#e5e7eb" : "#111827",
-            }}
+            content={
+              <CustomTooltip formatter={tooltipFormatter} />
+            }
           />
 
           <Legend

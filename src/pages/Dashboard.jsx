@@ -25,7 +25,7 @@ export default function Dashboard() {
   const processedData = useMemo(() => {
     if (!sessions || sessions.length < 2) return [];
 
-    const headers = sessions[0];
+    // const headers = sessions[0];
     const rows = sessions.slice(1);
 
     return rows.map((row) => {
@@ -89,6 +89,8 @@ export default function Dashboard() {
   
     const grouped = {};
     processedData.forEach((item) => {
+      // console.log(item);
+      
       const date = new Date(item.timestamp);
       let key;
   
@@ -113,7 +115,10 @@ export default function Dashboard() {
       }
   
       if (!grouped[key])
-        grouped[key] = { timestamp: key, pages: 0, time: 0, speed: 0, count: 0, bookSessions: 0, uniqueBooks: new Set() };
+        grouped[key] = {
+          timestamp: key, pages: 0, time: 0, speed: 0, count: 0, bookSessions: 0,
+          uniqueBooks: new Set(), uniqueChps: new Set(), comChps: new Set()
+        };
   
       grouped[key].pages += Number(item.pages) || 0;
       grouped[key].time += Number(item.time) || 0;
@@ -121,7 +126,14 @@ export default function Dashboard() {
       grouped[key].count += 1;
       grouped[key].bookSessions += 1;
       grouped[key].uniqueBooks.add(item.book);
+      grouped[key].uniqueChps.add(item.chapter);
+      if (item.status.trim().toLowerCase() === 'completed') {
+        grouped[key].comChps.add(item.chapter);
+    }
     });
+
+    // console.log(grouped);
+    
   
     // Turn into array
     const result = Object.values(grouped).map((g) => ({
@@ -130,6 +142,8 @@ export default function Dashboard() {
       pages: g.pages,
       time: g.time,
       bookCount: g.uniqueBooks.size,
+      chpCount: g.uniqueChps.size,
+      Chapters_Completed: g.comChps.size,
       speed: g.count ? +(g.speed / g.count).toFixed(2) : 0,
     }));
   
@@ -191,6 +205,8 @@ export default function Dashboard() {
             pages: 0,
             time: 0,
             bookCount: 0,
+            chpCount: 0,
+            Chapters_Completed: 0,
             speed: 0,
           }
         );
@@ -215,13 +231,15 @@ export default function Dashboard() {
   
     const timeChange = secondLast ? changeForm(last.time, secondLast.time) : "";
     const speedChange = secondLast ? changeForm(avgSpeed, secLastAvgSpeed) : "";
+
     return [
-      {label: "Sessions" , value: last.bookSessions, change: changeForm(last.bookSessions, secondLast ? secondLast.bookSessions : 0)},
       { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
         ? { label: "Total Time", value: totalTime.toFixed(2) + "min", change: timeChange }
         : { label: "Total Time", value: Math.floor(totalTime / 60) + " h " + (totalTime % 60) + " min", change: timeChange },
-      {label: "Books Read", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0)},
+      { label: "Books Visited", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0) },
+      { label: "Chapters Visited", value: last.chpCount, change: changeForm(last.chpCount, secondLast ? secondLast.chpCount : 0) },
+      { label: "Chapters Completed", value: last.Chapters_Completed, change: changeForm(last.Chapters_Completed, secondLast ? secondLast.Chapters_Completed : 0) },
       { label: "Average Speed (pages/min)", value: avgSpeed, change: speedChange },
     ];
   }, [chartData]);
@@ -252,7 +270,7 @@ export default function Dashboard() {
           key = date.toLocaleDateString(dateForm, { month: "short", year: "numeric" });
           break;
         case "yearly":
-          key = date.getFullYear();
+          key = String(date.getFullYear());
           break;
         default:
           key = date.toLocaleDateString();
@@ -273,14 +291,7 @@ export default function Dashboard() {
     <div className="flex min-h-screen bg-background text-foreground transition-colors duration-300">
      <SideBar sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
-              title="Library"
-              navComponent={NavSidebar}
-              footerContent="Profile Settings"
-              width="w-72"
-              bgColor="bg-card"
-              borderColor="border-border"
-              textColor="text-foreground"
-              footerTextColor="text-muted-foreground" />
+              navComponent={NavSidebar} />
 
       {/* Main content */}
       <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
@@ -330,10 +341,11 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        {/* <div className="flex flex-wrap gap-4"> */}
-          <GenericStatsCards stats={statsData.slice(0, statsData.length -1)} />
-          <GenericStatsCardWithChart statd={statsData.slice(-1)} graphData={chartData} lineDatakey="speed"/>
-        {/* </div> */}
+        <GenericStatsCards stats={statsData.slice(0, statsData.length - 2)} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <GenericStatsCardWithChart statd={statsData.slice(-2)} graphData={chartData} lineDatakey="Chapters_Completed"/>
+          <GenericStatsCardWithChart statd={statsData.slice(-1)} graphData={chartData} lineDatakey="speed" CI={16} />
+        </div>
 
         {/* Alerts */}
         {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

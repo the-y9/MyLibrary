@@ -13,13 +13,6 @@ function Sessions() {
   const [summary, setSummary] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    if (sessions) {
-      setFilteredSessions(sessions);
-      computeSummary(sessions);
-    }
-  }, [sessions]);
-
   const durationStrToSeconds = (dateStr) => {
     if (!dateStr) return -1
     const match = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
@@ -42,30 +35,38 @@ function Sessions() {
     return formatSeconds(totalSeconds);
   };
 
-  const computeSummary = (adata) => {
-    const data = adata.slice(1); // Exclude header row
-    // console.log(data);
-    
-    const pagesIndex = 8;  // Pages read
-    const sessionIndex = 9; // Session time
-    const bookIndex = 10; // Book ID
+  useEffect(() => {
+    if (sessions) {
+      setFilteredSessions(sessions);
 
-    const totalPages = data.reduce((sum, row) => {
-      const pages = parseInt(row[pagesIndex], 10);
-      return sum + (isNaN(pages) ? 0 : pages);
-    }, 0);
+      const computeSummary = (adata) => {
+        const data = adata.slice(1); // Exclude header row
+        // console.log(data);
+        
+        const pagesIndex = 8;  // Pages read
+        const sessionIndex = 9; // Session time
+        const bookIndex = 10; // Book ID
     
-    const totalSeconds = data.reduce((sum, row) => sum + durationStrToSeconds(row[sessionIndex]), 0);
-    const totalSessions = data.filter((r) => r[bookIndex]).length;
-    const books = [...new Set(data.map((r) => r[bookIndex]).filter(Boolean))];
+        const totalPages = data.reduce((sum, row) => {
+          const pages = parseInt(row[pagesIndex], 10);
+          return sum + (isNaN(pages) ? 0 : pages);
+        }, 0);
+        
+        const totalSeconds = data.reduce((sum, row) => sum + durationStrToSeconds(row[sessionIndex]), 0);
+        const totalSessions = data.filter((r) => r[bookIndex]).length;
+        const books = [...new Set(data.map((r) => r[bookIndex]).filter(Boolean))];
+    
+        setSummary({
+          totalPages,
+          totalSessions,
+          totalBooks: books.length,
+          totalTime: formatSeconds(totalSeconds),
+        });
+      };
 
-    setSummary({
-      totalPages,
-      totalSessions,
-      totalBooks: books.length,
-      totalTime: formatSeconds(totalSeconds),
-    });
-  };
+      computeSummary(sessions);
+    }
+  }, [sessions]);
 
   if (!sessions) return <p>Loading data...</p>;
 

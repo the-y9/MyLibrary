@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   ResponsiveContainer,
   PieChart,
@@ -9,6 +8,30 @@ import {
 } from "recharts";
 import COLORS from "./Colors.jsx";
 
+const CustomTooltip = ({ active, payload, label, formatter }) => {
+  if (!active || !payload || payload.length === 0) return null;
+// console.log(payload);
+
+
+  return (
+    <div className="p-2 rounded-lg shadow-lg bg-card border">
+      <p className="text-xs">{label}</p>
+
+      {payload.map((entry, index) => {
+        
+        return (
+          <div key={index} className="flex items-center gap-2 mb-1">
+            {/* label + value */}
+            <p className="text-sm font-semibold text-foreground" style={{ color: entry.payload.fill }} >
+              {entry.name}: {entry.payload.value}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const GenericPieChart = ({
   title = "Pie Chart",
   data = [],          // [{ label: "Book 1", value: 30 }, ...]
@@ -16,30 +39,11 @@ const GenericPieChart = ({
   nameKey = "label",  // key for category label
   height = 250,
 }) => {
-  const [isDark, setIsDark] = useState(false);
 
-  useEffect(() => {
-    // Detect system dark mode
-    const mode = localStorage.getItem("theme")
-    const darkMode = mode==='dark';
-    setIsDark(darkMode);
-
-    // // Optional: listen for changes
-    // const listener = (e) => setIsDark(e.matches);
-    // window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", listener);
-    // return () => window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", listener);
-  }, []);
-
-  const tooltipStyle = {
-    backgroundColor: isDark ? "#1f2937" : "#fff",
-    borderColor: isDark ? "#4b5563" : "#e5e7eb",
-    color: isDark ? "#e5e7eb" : "#111827",
-  };
-
-  const legendStyle = { color: isDark ? "#e5e7eb" : "#111827" };
-
+  // console.log(data);
+  
   return (
-    <div className={`bg-white dark:bg-gray-800 p-4 rounded-xl shadow`}>
+    <div className={`bg-card dark:bg-gray-800 p-4 rounded-xl shadow`}>
       <h3 className={`font-semibold mb-4 text-foreground`}>
         {title}
       </h3>
@@ -54,14 +58,25 @@ const GenericPieChart = ({
             cy="50%"
             outerRadius={80}
             label
+            className="mt-4 mb-4"
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
 
-          <Tooltip contentStyle={tooltipStyle} formatter={(value) => `${value}`} />
-          <Legend wrapperStyle={legendStyle} />
+          <Tooltip content={<CustomTooltip />} formatter={(value) => `${value}`} />
+          
+          <Legend
+  layout="vertical"
+  align="right"
+  verticalAlign="middle"
+  wrapperStyle={{
+    maxHeight: 150,
+    overflowY: "auto"
+  }}
+/>
+
         </PieChart>
       </ResponsiveContainer>
     </div>

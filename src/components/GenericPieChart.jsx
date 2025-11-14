@@ -68,13 +68,14 @@ const GenericPieChart = ({
           <Tooltip content={<CustomTooltip />} formatter={(value) => `${value}`} />
           
           <Legend
-  layout="vertical"
-  align="right"
-  verticalAlign="middle"
-  wrapperStyle={{
-    maxHeight: 150,
-    overflowY: "auto"
-  }}
+            layout="vertical"
+            align="right"
+            verticalAlign="middle"
+            wrapperStyle={{
+              maxHeight: 300,
+              overflowY: "auto",
+              maxWidth: 100
+            }}
 />
 
         </PieChart>

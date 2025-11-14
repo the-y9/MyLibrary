@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -59,16 +58,6 @@ const GenericLineChart = ({
   rightAxis = false,
   interval = "daily",
 }) => {
-  const [isDark, setIsDark] = useState(false);
-
-  // Detect dark mode using Tailwind's dark class on html/body
-  useEffect(() => {
-    const mode = localStorage.getItem("theme")
-    const darkMode = mode === 'dark';
-    // console.log(darkMode);
-    
-    setIsDark(darkMode);
-  },[]);
 
   const getLabelAngle = (dataLength) => {
     if (dataLength <= 3) return 0;
@@ -105,42 +94,32 @@ const GenericLineChart = ({
     return [value, name];
   };
 
-  const axisColor = isDark ? "#e5e7eb" : "#374151"; // light for dark bg, dark for light bg
-  const gridColor = isDark ? "#4b5563" : "#e5e7eb";
-
   return (
-    <div className={`bg-white dark:bg-gray-800 p-4 rounded-xl shadow`}>
+    <div className={`bg-white dark:bg-gray-800 p-4 text-foreground rounded-xl shadow`}>
       <h3 className={`font-semibold mb-4 text-foreground`}>
         {title}
       </h3>
 
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={data} style={style}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+          <CartesianGrid strokeDasharray="3 3"  />
 
           <XAxis
             dataKey={dataKeyX}
             angle={getLabelAngle(data.length)}
-            textAnchor={data.length > 3 ? "end" : "middle"}
+            textAnchor={data.length > 4 ? "end" : "middle"}
             tickFormatter={formatXAxis}
             interval={0}
-            stroke={axisColor}
           />
 
-          <YAxis yAxisId="left" stroke={axisColor} />
-          {rightAxis && <YAxis yAxisId="right" orientation="right" stroke={axisColor} />}
+          <YAxis yAxisId="left"  />
+          {rightAxis && <YAxis yAxisId="right" orientation="right"  />}
 
           <Tooltip
-            formatter={tooltipFormatter}
-            content={
-              <CustomTooltip formatter={tooltipFormatter} />
-            }
+            content={ <CustomTooltip formatter={tooltipFormatter} /> }
           />
 
-          <Legend
-            verticalAlign="top"
-            wrapperStyle={{ color: isDark ? "#e5e7eb" : "#111827" }}
-          />
+          <Legend  verticalAlign="top" />
 
           {lines.map((line, index) => {
             const yAxisId = rightAxis && index === lines.length - 1 ? "right" : "left";

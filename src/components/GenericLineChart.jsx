@@ -24,12 +24,6 @@ const CustomTooltip = ({ active, payload, label, formatter }) => {
 
         return (
           <div key={index} className="flex items-center gap-2 mb-1">
-            {/* color indicator */}
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            />
-
             {/* label + value */}
             <p
               className="text-sm font-semibold text-foreground"

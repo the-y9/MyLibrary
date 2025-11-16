@@ -1,68 +1,76 @@
-const DataListCard = ({ title = "Recent Items", items = [], keyField, label, subtitle, value, status }) => {
-    return (
-      <div className="bg-card p-4 rounded-xl shadow">
-        <h3 className="font-semibold mb-4">{title}</h3>
-        <div className="space-y-3">
-          {items.map((item, index) => (
+const DataListCard = ({
+  title = "Recent Items",
+  items = [],
+  keyField,
+  label,
+  subtitle,
+  value,
+  status
+}) => {
+  return (
+    <div className="bg-card p-4 rounded-xl shadow">
+      <h3 className="font-semibold mb-4">{title}</h3>
+      <div className="space-y-3">
+        {items.map((item, index) => {
+          const rawStatus = item[status] || "";
+          const stext = rawStatus.trim().toLowerCase();
+
+          const isCompleted = stext === "completed";
+          const isPending = stext === "pending";
+
+          // 🎯 Normalize ANY topic writing pattern:
+          // topicwriting, topic-writing, topic writing, topic   writing, etc.
+          const topicRegex = /^topic[-\s]?writing\b/i;
+          const isTopicWriting = topicRegex.test(rawStatus);
+
+          // ✨ Extract everything AFTER "topic-writing"
+          let topicExtra = "";
+          if (isTopicWriting) {
+            topicExtra = rawStatus.replace(topicRegex, "").trim();
+          }
+
+          return (
             <div
               key={item[keyField] ?? index}
               className="flex justify-between items-center border p-3 rounded-lg"
             >
               <div>
-                <p className="font-medium">{item[label]  ?? `Item ${item[keyField] ?? index}`}</p>
-                <p className="text-sm text-gray-500">
-                  {item[subtitle] || ""}
+                <p className="font-medium">
+                  {item[label] ?? `Item ${item[keyField] ?? index}`}
                 </p>
-                {item[value] && <p className="font-semibold">{item[value]}</p>}
+
+                {/* ✨ Show extra text of topic-writing under the value */}
+                {isTopicWriting && topicExtra && (
+                  <p className="font-semibold text-sm text-foreground">{topicExtra}</p>
+                )}
+
+                <p className="text-sm text-gray-500">{item[subtitle] || ""}</p>
+
+                {item[value] && (
+                  <p className="font-semibold">{item[value]}</p>
+                )}
               </div>
-              {item[status] && (
+
+              {/* RIGHT BADGE SECTION */}
+              {(isCompleted || isPending || isTopicWriting) && (
                 <span
                   className={`px-3 py-1 rounded-full text-sm ${
-                    item[status].trim().toLowerCase() === "completed"
+                    isCompleted
                       ? "bg-green-100 text-green-600"
-                      : item[status].trim().toLowerCase() === "pending"
+                      : isPending
                       ? "bg-yellow-100 text-yellow-600"
-                      : "bg-gray-100 text-gray-600"
+                      : "bg-cyan-100 text-cyan-600" // topic-writing
                   }`}
                 >
-                  {item[status]}
+                  {isTopicWriting ? "Topic Writing" : rawStatus}
                 </span>
               )}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    );
-  };
-  
-  // Example usage:
-//   const Example = () => {
-//     const orders = [
-//       {
-//         id: "#1001",
-//         label: "Chapter Name",
-//         subtitle: "book 1 · Oct 10, 2025",
-//         value: "pages · time spent",
-//         status: "Completed",
-//       },
-//       {
-//         id: "#1002",
-//         label: "Chapter Name",
-//         subtitle: "Book 2 · Oct 12, 2025",
-//         value: "pages · time spent",
-//         status: "Pending",
-//       },
-//       {
-//         id: "#1003",
-//         label: "Chapter Name",
-//         subtitle: "Book 3 · Oct 13, 2025",
-//         value: "pages · time spent",
-//         status: "Completed",
-//       },
-//     ];
-  
-//     return <DataListCard title="Recent Sessions" items={orders} />;
-//   };
-  
-  export default DataListCard;
-  
+    </div>
+  );
+};
+
+export default DataListCard;

@@ -78,7 +78,7 @@ export default function Dashboard() {
         id: item.timestamp, // fallback to timestamp if id missing
         label: item.chapter ?? "Chapter",
         subtitle: `${item.book} · ${formattedDate}`,
-        value: `${item.pages} pages · ${item.time.toFixed(2)} min · ${(item.pages/item.time).toFixed(2)} p/m`,
+        value: `${item.pages} pages · ${item.time.toFixed(0)} min · ${(item.pages/item.time).toFixed(2)} p/m`,
         status: item.status || "Pending",
       };
     });
@@ -235,7 +235,7 @@ export default function Dashboard() {
     return [
       { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
-        ? { label: "Total Time", value: totalTime.toFixed(2) + "min", change: timeChange }
+        ? { label: "Total Time", value: totalTime.toFixed(0) + " min", change: timeChange }
         : { label: "Total Time", value: Math.floor(totalTime / 60) + " h " + (totalTime % 60) + " min", change: timeChange },
       { label: "Books Visited", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0) },
       { label: "Chapters Visited", value: last.chpCount, change: changeForm(last.chpCount, secondLast ? secondLast.chpCount : 0) },

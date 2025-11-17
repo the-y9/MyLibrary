@@ -63,11 +63,16 @@ const GenericLineChart = ({
     switch (interval) {
       case "daily":
         return date.getDate();
-      case "weekly": {
-        const startOfWeek = new Date(date);
-        startOfWeek.setDate(date.getDate() - date.getDay() + 1);
-        return `${startOfWeek.getDate()} - ${startOfWeek.getDate() + 6}`;
-      }
+        case "weekly": {
+          const startOfWeek = new Date(date);
+          startOfWeek.setDate(date.getDate() - date.getDay() + 1);
+        
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(endOfWeek.getDate() + 6);
+        
+          return `${startOfWeek.getDate()} - ${endOfWeek.getDate()}`;
+        }
+        
       case "monthly":
         return date.toLocaleString("default", { month: "short" });
       case "yearly":
@@ -84,7 +89,7 @@ const GenericLineChart = ({
       const hours = Math.floor(totalTime / 60);
       const minutes = totalTime % 60;
       return [`${hours} h ${minutes} min`, name];
-    }
+    }    
     return [value, name];
   };
 

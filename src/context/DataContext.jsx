@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const DataContext = createContext();
 
-const SHEET_ID = await process.env.REACT_APP_SHEET_ID
+const SHEET_ID = process.env.REACT_APP_SHEET_ID
 
 // console.log("shi: ",shi);
 

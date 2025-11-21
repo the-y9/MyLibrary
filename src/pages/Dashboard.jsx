@@ -22,6 +22,8 @@ export default function Dashboard() {
   const { sessions } = useContext(DataContext);
   const [interval, setInterval] = useState("daily"); // "daily" | "weekly" | "monthly" | "yearly"
 
+  // console.log(sessions);
+  
   const processedData = useMemo(() => {
     if (!sessions || sessions.length < 2) return [];
 
@@ -33,15 +35,10 @@ export default function Dashboard() {
       
       const book = row[1];
       
-      const startTime = row[4];
-      const endTime = (row[5]);
-
+      const stime = Number(row[9])
       const pagesRead = row[8];
-      const timeSpent =
-        startTime && endTime
-          ? (endTime - startTime) / (1000 * 60) // minutes
-          : 0;
-      const speed = timeSpent > 0 ? +(pagesRead / timeSpent).toFixed(2) : 0;
+      
+      const speed = stime > 0 ? +(pagesRead / stime).toFixed(2) : 0;
 
       const id = row[10];
       const chapter = row[6];
@@ -51,7 +48,7 @@ export default function Dashboard() {
         timestamp,
         book,
         pages: pagesRead,
-        time: timeSpent,
+        time: stime,
         speed,
         id,
         chapter,
@@ -88,6 +85,8 @@ export default function Dashboard() {
     if (!processedData || processedData.length === 0) return [];
   
     const grouped = {};
+    // console.log(processedData[0]);
+    
     processedData.forEach((item) => {
       // console.log(item);
       
@@ -236,7 +235,7 @@ export default function Dashboard() {
       { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
         ? { label: "Total Time", value: totalTime.toFixed(0) + " min", change: timeChange }
-        : { label: "Total Time", value: Math.floor(totalTime / 60) + " h " + (totalTime % 60) + " min", change: timeChange },
+        : { label: "Total Time", value: Math.floor(totalTime / 60) + " h " + (totalTime % 60).toFixed(0) + " min", change: timeChange },
       { label: "Books Visited", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0) },
       { label: "Chapters Visited", value: last.chpCount, change: changeForm(last.chpCount, secondLast ? secondLast.chpCount : 0) },
       { label: "Chapters Completed", value: last.Chapters_Completed, change: changeForm(last.Chapters_Completed, secondLast ? secondLast.Chapters_Completed : 0) },

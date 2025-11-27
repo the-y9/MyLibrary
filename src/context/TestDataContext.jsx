@@ -9,6 +9,7 @@ const TESTS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tq
 )}`;
 
 // Parse Excel-style date
+// eslint-disable-next-line
 const parseExcelDate = (dateStr) => {
     console.log(1, dateStr);
     
@@ -97,6 +98,7 @@ export const TestDataProvider = ({ children }) => {
 
   useEffect(() => {
     fetchTests();
+    // eslint-disable-next-line
   }, [refresh]);
 
   return (

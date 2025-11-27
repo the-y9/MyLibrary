@@ -30,6 +30,7 @@ const parseExcelDate = (dateStr) => {
 export const DataProvider = ({ children }) => {
   const [sessions, setSessions] = useState(null);
   const [books, setBooks] = useState(null);
+  // eslint-disable-next-line
   const [bookSummary, setBookSummary] = useState(null);
 
   const parseGviz = (text) => {
@@ -81,6 +82,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchSessionsAndCompute = async () => {
     try {
+      // eslint-disable-next-line
       const booksMaster = await fetchBooksMaster();
   
       const cachedSessions = localStorage.getItem("sessions");
@@ -122,6 +124,7 @@ export const DataProvider = ({ children }) => {
 
   useEffect(() => {
     fetchSessionsAndCompute();
+    // eslint-disable-next-line
   }, []);
 
   return (

@@ -1,4 +1,3 @@
-import useTheme from "../hooks/useTheme";
 import AnimatedThemeToggle from "./ThemeToggle";
 
 export default function Sidebar({
@@ -14,7 +13,6 @@ export default function Sidebar({
     footerTextColor = "text-muted-foreground",
 }) {
   
-  const [theme, setTheme] = useTheme();
     return (
       <>
         {/* Sidebar */}

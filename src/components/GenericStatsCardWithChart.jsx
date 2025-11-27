@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { LineChart, Line, Tooltip, XAxis } from "recharts";
 import COLORS from "./Colors"
 
@@ -14,18 +15,45 @@ const CustomTooltip = ({ active, payload, label, CI }) => {
 
   
 const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "timestamp",
-    lineDatakey, CI = 9,
+    lineDatakey,
+    info = null,
+    CI = 9,
     chartStyle = { width: "100%", maxWidth: "200px", maxHeight: "100px", aspectRatio: 1.618 } }) => {
     
     const stat = statd[0]; // could be undefined if array is empty
+    const [showInfo, setShowInfo] = useState(false);
 
     return (
 
         <div className="bg-card p-4 rounded-xl shadow flex justify-between max-w-sm">
-            <div id="stattext">
-                {stat ? (
-                    <>
-                        {stat.label && <p className="text-sm text-gray-500">{stat.label}</p>}
+            
+<div id="stattext">
+{stat ? (
+  <>
+    {/* LABEL + INFO ICON */}
+    {stat.label && (
+      <div className="flex items-center gap-1 relative">
+        <p className="text-sm text-gray-500">{stat.label}</p>
+
+        {info && (
+          <span
+            className="text-xs cursor-pointer text-blue-500 hover:text-blue-700"
+            onMouseEnter={() => setShowInfo(true)}
+            onMouseLeave={() => setShowInfo(false)}
+          >
+            ⓘ
+          </span>
+        )}
+
+        {/* INFO POPOVER */}
+        {showInfo && info && (
+          <div className="absolute left-0 top-6 w-52 p-2 rounded-md bg-popover border shadow z-20 text-xs">
+            {info}
+          </div>
+        )}
+      </div>
+    )}
+                
                         {stat.value && <h3 className="text-2xl font-bold text-foreground">{stat.value}</h3>}
                         {stat.change && (
                             <p className={`text-sm ${stat.change.startsWith("-") ? "text-red-500" : "text-green-500"}`}>

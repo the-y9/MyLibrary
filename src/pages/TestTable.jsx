@@ -15,8 +15,8 @@ function TestTable({ visibleHeaders = []}) {
 
   return (
     <div className="bg-card rounded-lg shadow overflow-x-auto">
-      <table className="min-w-full text-sm text-left">
-        <thead className="bg-gray-100 text-gray-700">
+      <table className="min-w-full text-sm text-left border border-border">
+        <thead className="bg-gray-100 text-gray-700 border border-border">
           <tr>
             {visibleIndexes.map((i) => (
               <th
@@ -36,11 +36,17 @@ function TestTable({ visibleHeaders = []}) {
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="border border-border">
           {tests.rows.map((row) => (
             <tr
               key={row.key}
-              className="border-border hover:bg-background transition "
+              className={`
+                border-t border-gray-200 dark:border-gray-700
+                odd:bg-gray-50 dark:odd:bg-gray-800
+                even:bg-white dark:even:bg-gray-900
+                hover:bg-gray-100 dark:hover:bg-gray-700
+                transition
+              `}
             >
               {visibleIndexes.map((i) => (
                 <td key={i} className="px-4 py-2 text-foreground">

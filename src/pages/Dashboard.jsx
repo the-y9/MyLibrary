@@ -9,7 +9,7 @@ import GenericLineChart from '../components/GenericLineChart';
 import GenericStatsCards from '../components/GenericStatsCard';
 import GenericPieChart from '../components/GenericPieChart';
 import GenericStatsCardWithChart from '../components/GenericStatsCardWithChart';
-
+import WheelPicker from '../components/WheelPicker'
 const dateForm = "default"; 
 const changeForm = (final, initial) => {
   if (initial === 0) return "";
@@ -21,7 +21,7 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { sessions } = useContext(DataContext);
   const [interval, setInterval] = useState("daily"); // "daily" | "weekly" | "monthly" | "yearly"
-
+  
   // console.log(sessions);
   
   const processedData = useMemo(() => {
@@ -215,33 +215,39 @@ export default function Dashboard() {
     return filled.slice(-10);
   }, [processedData, interval]);
   
+  const [selectedTimestamp, setSelectedTimestamp] = useState();
+  
   const statsData = useMemo(() => {
     if (!chartData || chartData.length === 0) return [];
-  // console.log(chartData);
+    if (!selectedTimestamp) setSelectedTimestamp(chartData[chartData.length - 1].timestamp);
   
-    // Take the last aggregate
-    const secondLast = chartData.length > 1 ? chartData[chartData.length - 2] : null;
-    const last = chartData[chartData.length - 1];
-    
-    const totalPages = last.pages;
-    const totalTime = last.time; // in minutes
+    const selectedData = chartData.find(d => d.timestamp === selectedTimestamp);
+    if (!selectedData) return [];
+  
+    // Find the previous interval for comparison
+    const selectedIndex = chartData.findIndex(d => d.timestamp === selectedTimestamp);
+    const secondLast = selectedIndex > 0 ? chartData[selectedIndex - 1] : null;
+  
+    const totalPages = selectedData.pages;
+    const totalTime = selectedData.time;
     const avgSpeed = totalTime > 0 ? +(totalPages / totalTime).toFixed(2) : 0;
     const secLastAvgSpeed = secondLast && secondLast.time > 0 ? +(secondLast.pages / secondLast.time).toFixed(2) : 0;
   
-    const timeChange = secondLast ? changeForm(last.time, secondLast.time) : "";
+    const timeChange = secondLast ? changeForm(totalTime, secondLast.time) : "";
     const speedChange = secondLast ? changeForm(avgSpeed, secLastAvgSpeed) : "";
-
+  
     return [
-      { label: "Total Pages Read", value: totalPages, change: changeForm(last.pages, secondLast ? secondLast.pages : 0) },
+      { label: "Total Pages Read", value: totalPages, change: changeForm(totalPages, secondLast ? secondLast.pages : 0) },
       totalTime < 60
         ? { label: "Total Time", value: totalTime.toFixed(0) + " min", change: timeChange }
         : { label: "Total Time", value: Math.floor(totalTime / 60) + " h " + (totalTime % 60).toFixed(0) + " min", change: timeChange },
-      { label: "Books Visited", value: last.bookCount, change: changeForm(last.bookCount, secondLast ? secondLast.bookCount : 0) },
-      { label: "Chapters Visited", value: last.chpCount, change: changeForm(last.chpCount, secondLast ? secondLast.chpCount : 0) },
-      { label: "Chapters Completed", value: last.Chapters_Completed, change: changeForm(last.Chapters_Completed, secondLast ? secondLast.Chapters_Completed : 0) },
+      { label: "Books Visited", value: selectedData.bookCount, change: changeForm(selectedData.bookCount, secondLast ? secondLast.bookCount : 0) },
+      { label: "Chapters Visited", value: selectedData.chpCount, change: changeForm(selectedData.chpCount, secondLast ? secondLast.chpCount : 0) },
+      { label: "Chapters Completed", value: selectedData.Chapters_Completed, change: changeForm(selectedData.Chapters_Completed, secondLast ? secondLast.Chapters_Completed : 0) },
       { label: "Average Speed (pages/min)", value: avgSpeed, change: speedChange },
     ];
-  }, [chartData]);
+  }, [chartData, selectedTimestamp]);
+  
   
   const pieData = useMemo(() => {
     if (!processedData || processedData.length === 0) return [];
@@ -302,11 +308,11 @@ export default function Dashboard() {
                 <>
                   {interval === "weekly"
                     ? (() => {
-                        const lastDate = new Date(chartData[chartData.length - 1].timestamp);
+                        const lastDate = new Date(selectedTimestamp);
                         lastDate.setDate(lastDate.getDate() + 6);
 
                         // format both start and end
-                        const startLabel = new Date(chartData[chartData.length - 1].timestamp).toLocaleDateString(dateForm, {
+                        const startLabel = new Date(selectedTimestamp).toLocaleDateString(dateForm, {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
@@ -320,7 +326,7 @@ export default function Dashboard() {
 
                         return `${startLabel} - ${endLabel}`;
                       })()
-                    : chartData[chartData.length - 1].timestamp}
+                    : selectedTimestamp}
                 </>
               )}
             </p>
@@ -357,18 +363,26 @@ export default function Dashboard() {
         </div> */}
 
         {/* Graphs & recent */}
-        <div className="flex gap-2 mb-4">
-          {["daily", "weekly", "monthly", "yearly"].map((option) => (
-            <button
-              key={option}
-              onClick={() => setInterval(option)}
-              className={`px-3 py-1 rounded ${
-                interval === option ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-              }`}
-            >
-              {option.charAt(0).toUpperCase() + option.slice(1)}
-            </button>
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <WheelPicker
+            items={chartData?.map(item => item.timestamp) || []}
+            initialValue={chartData?.length ? chartData[chartData.length - 1].timestamp : null}
+            onSelect={(timestamp) => setSelectedTimestamp(timestamp)}
+          />
+
+          <div className="flex gap-2 mb-4 ">
+            {["daily", "weekly", "monthly", "yearly"].map((option) => (
+              <button
+                key={option}
+                onClick={() => { setSelectedTimestamp(chartData[chartData.length - 1].timestamp); setInterval(option); }}
+                className={`px-3 py-1 rounded ${
+                  interval === option ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                {option.charAt(0).toUpperCase() + option.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

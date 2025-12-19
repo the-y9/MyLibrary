@@ -5,7 +5,7 @@ import { SyllabusDataProvider, SyllabusDataContext } from "../context/SyllabusDa
 import SideBar from "../components/SideBar";
 import NavSidebar from "./NavSidebar";
 import { Menu } from "lucide-react";
-import SyllabusTable from "./SyllabusTable";
+// import SyllabusTable from "./SyllabusTable";
 import SyllabusCollapsible from "./SyllabusC"
 
 function Syllabus() {
@@ -30,12 +30,12 @@ function Syllabus() {
 
 const SyllabusPage = ({sidebarOpen, setSidebarOpen}) => {
     const { syllabus, refresh, setRefresh } = useContext(SyllabusDataContext);
-    const [sectionFilter, setsectionFilter] = useState("");
     
 //   console.log(syllabus);
 
   if (!syllabus) return <h2>Loading syllabus...</h2>;
-
+  
+    // eslint-disable-next-line
   const { headers, rows } = syllabus;
 
     return (

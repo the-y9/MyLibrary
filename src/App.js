@@ -5,6 +5,7 @@ import SessionSummary from "./pages/SessionSummary";
 import BookSummary from "./pages/BookSummary";
 import Dashboard from "./pages/Dashboard";
 import Tests from "./pages/Tests";
+import Syllabus from "./pages/Syllabus"
 
 function App() {
   return (<>
@@ -14,6 +15,7 @@ function App() {
         <Route path="/sessions" element={<SessionSummary />} />
         <Route path="/books" element={<BookSummary />} />
         <Route path="/tests" element={<Tests />} />
+        <Route path="/syllabus" element={<Syllabus />} />
       </Routes>
     </Router>
   

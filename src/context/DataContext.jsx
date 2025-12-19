@@ -5,9 +5,6 @@ export const DataContext = createContext();
 
 const SHEET_ID = process.env.REACT_APP_SHEET_ID
 
-// console.log("shi: ",shi);
-
-// const SHEET_ID = "1HzHupzGxFMqQjtz0ZsVEHZgD87MiEk-VJcg0OrIfUio";
 const SESSIONS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=${encodeURIComponent(
   "select * order by A desc limit 10000"
 )}`;

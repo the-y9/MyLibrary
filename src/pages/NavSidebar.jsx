@@ -5,6 +5,7 @@ const navItems = [
   { name: "Sessions", path: "/sessions" },
   { name: "Books", path: "/books" },
   { name: "Tests", path: "/tests" },
+  { name: "Syllabus", path: "/syllabus" },
 ];
 
 export default function Sidebar() {

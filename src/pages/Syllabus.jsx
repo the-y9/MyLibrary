@@ -1,11 +1,12 @@
 
   
 import { useContext, useState } from "react";
-import {
-    SyllabusDataProvider,
-    SyllabusDataContext
-  } from "../context/SyllabusDataContext";
-  
+import { SyllabusDataProvider, SyllabusDataContext } from "../context/SyllabusDataContext";
+import SideBar from "../components/SideBar";
+import NavSidebar from "./NavSidebar";
+import { Menu } from "lucide-react";
+import SyllabusTable from "./SyllabusTable";
+import SyllabusCollapsible from "./SyllabusC"
 
 function Syllabus() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,84 +21,64 @@ function Syllabus() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         interval={interval}
-              dateForm={dateForm}
-              setInterval={setInterval}
+        dateForm={dateForm}
+        setInterval={setInterval}
       />
     </SyllabusDataProvider>
   );
 }
 
-const SyllabusPage = () => {
-  const { syllabus, setRefresh } = useContext(SyllabusDataContext);
-  const [subjectFilter, setSubjectFilter] = useState("");
+const SyllabusPage = ({sidebarOpen, setSidebarOpen}) => {
+    const { syllabus, refresh, setRefresh } = useContext(SyllabusDataContext);
+    const [sectionFilter, setsectionFilter] = useState("");
+    
 //   console.log(syllabus);
 
   if (!syllabus) return <h2>Loading syllabus...</h2>;
 
   const { headers, rows } = syllabus;
 
-  const filteredRows = subjectFilter
-    ? rows.filter((r) => r.data[3] === subjectFilter)
-    : rows;
+    return (
+    <div className="flex min-h-screen bg-background">
+      <SideBar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        navComponent={NavSidebar}
+            />
+            <main className="flex-1 p-4 sm:p-6 space-y-6 w-full">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-semibold">Syllabus Tracker</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              className="md:hidden p-2 rounded-lg border text-gray-700 hover:bg-gray-100"
+              onClick={() => setSidebarOpen(true)}
+            >
+                            <Menu size={22} />
+                      </button>
+                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" onClick={() => setRefresh(c => c + 1)}>
+                        {refresh === 0 ? "Refresh Data" : `Refreshed ${refresh} time${refresh === 1 ? '' : 's'}`}
+                       </button>
+                      
+                    </div>
+                </div>
+                {/* <SyllabusTable headers={headers} rows={rows} /> */}
+                <SyllabusCollapsible data={rows.map((r) => ({
+          stage: r.data[0],
+          paper: r.data[1],
+          section: r.data[2],
+          subject: r.data[3],
+          topic: r.data[4],
+          status: r.data[5],
+          revision: r.data[6],
+          pyqs: r.data[7],
+          notes: r.data[8]
+        }))} />
 
-  const subjects = [...new Set(rows.map((r) => r.data[3]))];
-
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>📘 UPSC Syllabus Tracker</h1>
-
-      {/* Controls */}
-      <div style={{ marginBottom: "15px" }}>
-        <select
-          value={subjectFilter}
-          onChange={(e) => setSubjectFilter(e.target.value)}
-        >
-          <option value="">All Subjects</option>
-          {subjects.map((sub) => (
-            <option key={sub} value={sub}>
-              {sub}
-            </option>
-          ))}
-        </select>
-
-        <button
-          style={{ marginLeft: "10px" }}
-          onClick={() => setRefresh((r) => r + 1)}
-        >
-          🔄 Refresh
-        </button>
-      </div>
-      <p style={{ marginTop: "10px" }}>
-        Showing {filteredRows.length} / {rows.length} topics
-      </p>
-      {/* Table */}
-      <table
-        border="1"
-        cellPadding="8"
-        style={{ width: "100%", borderCollapse: "collapse" }}
-      >
-        <thead style={{ background: "#f0f0f0" }}>
-          <tr>
-            {headers.map((h) => (
-              <th key={h}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {filteredRows.map((row) => (
-            <tr key={row.key}>
-              {row.data.map((cell, i) => (
-                <td key={i}>{cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      
-    </div>
-  );
+            </main>
+        </div>
+    );
 };
 
 export default Syllabus;

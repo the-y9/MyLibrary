@@ -6,23 +6,7 @@ import NavSidebar from "./NavSidebar";
 import SideBar from "../components/SideBar";
 import SearchAndFilters from "../components/SearchAndFilters";
 
-// Helper: convert Google Sheets duration string to seconds
-const durationStrToSeconds = (dateStr) => {
-  if (!dateStr) return 0;
-  const match = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
-  if (!match) return 0;
-  const [, , , , hours, minutes, seconds] = match.map(Number);
-  return hours * 3600 + minutes * 60 + seconds;
-};
-
-const formatMinutes = (minutes) => {
-  if (!minutes) return "0 min";
-  if (minutes < 60) return `${Math.round(minutes)} min`;
-  const hours = Math.floor(minutes / 60);
-  const mins = Math.round(minutes % 60);
-  return mins > 0 ? `${hours} hr ${mins} min` : `${hours} hr`;
-};
-
+import { durationStrToSeconds, formatMinutes } from "../utils/times";
 
 const BookSummary = () => {
   const { books, sessions } = useContext(DataContext);

@@ -27,12 +27,10 @@ function Syllabus() {
   );
 }
 
-
-
 const SyllabusPage = () => {
   const { syllabus, setRefresh } = useContext(SyllabusDataContext);
   const [subjectFilter, setSubjectFilter] = useState("");
-console.log(syllabus);
+//   console.log(syllabus);
 
   if (!syllabus) return <h2>Loading syllabus...</h2>;
 

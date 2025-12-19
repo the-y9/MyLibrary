@@ -7,33 +7,14 @@ import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
 import SearchAndFilters from '../components/SearchAndFilters';
 
+import { durationStrToSeconds, formatSeconds, formatDuration } from "../utils/times";
+
 function Sessions() {
   const { sessions } = useContext(DataContext);
   const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [summary, setSummary] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const durationStrToSeconds = (dateStr) => {
-    if (!dateStr) return -1
-    const match = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
-    if (!match) return 0;
-    const [, , , , hours, minutes, seconds] = match.map(Number);
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  const formatSeconds = (totalSeconds) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    const mm = minutes.toString().padStart(2, "0");
-    const ss = seconds.toString().padStart(2, "0");
-    return `${hours}:${mm}:${ss}`;
-  };
-
-  const formatDuration = (dateStr) => {
-    const totalSeconds = durationStrToSeconds(dateStr);
-    return formatSeconds(totalSeconds);
-  };
 
   useEffect(() => {
     if (sessions) {

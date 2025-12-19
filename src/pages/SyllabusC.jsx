@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 // Colors for gradient
-const green = "#4CAF50";
-const red = "#F44336";
+const green = "#008104ff";
+const red = "#b10c00ff";
 
 // Function to generate color based on progress % (0=red, 100=green)
 const getProgressColor = (percent) => {

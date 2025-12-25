@@ -56,6 +56,7 @@ export const DataProvider = ({ children }) => {
           bookId: cells[0],
           bookTitle: cells[1],
           totalPages: Number(cells[8] || 0),
+          totalChps: Number(cells[9] || 0),
         };
       });
   

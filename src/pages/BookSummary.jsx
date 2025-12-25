@@ -46,7 +46,9 @@ const BookSummary = () => {
 
       book.totalPagesRead += pagesRead;
       book.totalTimeMinutes += sessionTime / 60;
-      if (chapter) book.chapters.add(chapter);
+      if (chapter) book.chapters.add(chapter.trim());
+
+// console.log(book.chapters);
 
       if (timestamp) {
         const ts = new Date(timestamp);
@@ -57,17 +59,27 @@ const BookSummary = () => {
     const summary = Object.values(bookMap).map((book) => {
       const master = books[book.bookId];
       const totalPages = master ? master.totalPages : 0;
+      const totalChps = master ? master.totalChps : 0;
+
 
       return {
         bookId: book.bookId,
         bookTitle: book.bookTitle,
         totalPages,
+        totalChps,
         totalPagesRead: book.totalPagesRead,
         totalTimeMinutes: Math.round(book.totalTimeMinutes),
-        lastReadDate: book.lastRead ? book.lastRead.toLocaleDateString() : "",
-        percentCompleted: totalPages
-          ? Math.round((book.totalPagesRead / totalPages) * 100)
-          : 0,
+        lastReadDate: book.lastRead ? book.lastRead.toLocaleDateString("default", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }) : "",
+        percentCompleted: totalChps && totalChps > 0
+                        ? Math.round((book.chapters.size / totalChps) * 100)
+                        : totalPages && totalPages > 0
+                          ? Math.round((book.totalPagesRead / totalPages) * 100)
+                          : 0,
+
         chaptersCompleted: book.chapters.size,
       };
     });
@@ -147,30 +159,32 @@ const BookSummary = () => {
         </div>
 
         <div className="table-container overflow-x-auto bg-card rounded-lg shadow">
-          <table>
+          <table className="text-center">
             <thead>
               <tr>
                 <th>Book ID</th>
                 <th>Book Title</th>
-                <th>Total Pages</th>
-                <th>Total Pages Read</th>
+                <th>Total Chapters</th>
+                <th>Chapters Completed</th>
                 <th>Last Read Date</th>
                 <th>Total Time (min)</th>
                 <th>% Completed</th>
-                <th>Chapters Completed</th>
               </tr>
             </thead>
             <tbody>
-              {filteredData?.map((book) => (
+              {filteredData?.slice() // avoid mutating original array
+                .sort(
+                  (a, b) =>
+                    new Date(b.lastReadDate) - new Date(a.lastReadDate)
+                ).map((book) => (
                 <tr key={book.bookId}>
                   <td>{book.bookId}</td>
                   <td>{book.bookTitle}</td>
-                  <td>{book.totalPages}</td>
-                  <td>{book.totalPagesRead}</td>
+                  <td>{book.totalChps ? book.totalChps : "-"}</td>
+                  <td>{book.chaptersCompleted}</td>
                   <td>{book.lastReadDate}</td>
                   <td>{formatMinutes(book.totalTimeMinutes)}</td>
                   <td>{book.percentCompleted}%</td>
-                  <td>{book.chaptersCompleted}</td>
                 </tr>
               ))}
             </tbody>

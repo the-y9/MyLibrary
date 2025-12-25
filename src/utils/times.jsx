@@ -29,8 +29,7 @@ export const durationStrToSeconds = (dateValue) => {
     return mins > 0 ? `${hours} hr ${mins} min` : `${hours} hr`;
 };
   
-export 
-  const formatSeconds = (totalSeconds) => {
+export const formatSeconds = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
@@ -42,4 +41,16 @@ export
   export const formatDuration = (dateStr) => {
     const totalSeconds = durationStrToSeconds(dateStr);
     return formatSeconds(totalSeconds);
-  };
+};
+  
+export const formatMin = (m) => {
+  const totalMinutes = Math.round(Number(m)); // kill float noise
+
+  if (totalMinutes >= 60) {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours} h ${minutes} min`;
+  }
+
+  return `${totalMinutes} min`;
+};

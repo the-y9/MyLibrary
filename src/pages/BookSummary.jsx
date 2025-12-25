@@ -6,7 +6,7 @@ import NavSidebar from "./NavSidebar";
 import SideBar from "../components/SideBar";
 import SearchAndFilters from "../components/SearchAndFilters";
 
-import { durationStrToSeconds, formatMinutes } from "../utils/times";
+import { formatMinutes, formatMin } from "../utils/times";
 
 const BookSummary = () => {
   const { books, sessions } = useContext(DataContext);
@@ -41,11 +41,11 @@ const BookSummary = () => {
       const book = bookMap[bookId];
       const pagesRead = Number(row[8] || 0);
       const timestamp = row[0];
-      const sessionTime = durationStrToSeconds(row[9]);
+      const sessionTime = Number(row[9]);
       const chapter = row[6];
 
       book.totalPagesRead += pagesRead;
-      book.totalTimeMinutes += sessionTime / 60;
+      book.totalTimeMinutes += sessionTime ;
       if (chapter) book.chapters.add(chapter.trim());
 
 // console.log(book.chapters);
@@ -68,7 +68,7 @@ const BookSummary = () => {
         totalPages,
         totalChps,
         totalPagesRead: book.totalPagesRead,
-        totalTimeMinutes: Math.round(book.totalTimeMinutes),
+        totalTimeMinutes: book.totalTimeMinutes,
         lastReadDate: book.lastRead ? book.lastRead.toLocaleDateString("default", {
           month: "short",
           day: "numeric",
@@ -188,7 +188,7 @@ const BookSummary = () => {
                     <td className="px-4 py-1 text-foreground">{book.percentCompleted}%</td>
                   <td className="px-4 py-1 text-foreground">{book.chaptersCompleted} / {book.totalChps ? book.totalChps : "-"}</td>
                   <td className="px-4 py-1 text-foreground">{book.lastReadDate}</td>
-                  <td className="px-4 py-1 text-foreground">{formatMinutes(book.totalTimeMinutes)}</td>
+                  <td className="px-4 py-1 text-foreground">{formatMin(book.totalTimeMinutes)}</td>
                   {/* <td>{book.bookId}</td> */}
                 </tr>
               ))}

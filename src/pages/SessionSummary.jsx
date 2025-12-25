@@ -6,14 +6,14 @@ import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
 import SearchAndFilters from '../components/SearchAndFilters';
 
-import { durationStrToSeconds, formatSeconds, formatDuration } from "../utils/times";
+import { formatMin } from "../utils/times";
 
 function Sessions() {
   const { sessions } = useContext(DataContext);
   const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [summary, setSummary] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const skipCellSet = new Set([11]);
 
   useEffect(() => {
     if (sessions) {
@@ -24,7 +24,7 @@ function Sessions() {
         // console.log(data);
         
         const pagesIndex = 8;  // Pages read
-        const sessionIndex = 9; // Session time
+        const sessionTimeIndex = 9; // Session time
         const bookIndex = 10; // Book ID
     
         const totalPages = data.reduce((sum, row) => {
@@ -32,7 +32,11 @@ function Sessions() {
           return sum + (isNaN(pages) ? 0 : pages);
         }, 0);
         
-        const totalSeconds = data.reduce((sum, row) => sum + durationStrToSeconds(row[sessionIndex]), 0);
+        const totalTime = data.reduce((sum, row) => {
+          const time = Number(row[sessionTimeIndex]);
+          return sum + (isNaN(time) ? 0 : time);
+        }, 0);
+        
         const totalSessions = data.filter((r) => r[bookIndex]).length;
         const books = [...new Set(data.map((r) => r[bookIndex]).filter(Boolean))];
     
@@ -40,7 +44,7 @@ function Sessions() {
           totalPages,
           totalSessions,
           totalBooks: books.length,
-          totalTime: formatSeconds(totalSeconds),
+          totalTime,
         });
       };
 
@@ -85,7 +89,7 @@ function Sessions() {
                     <p><strong>Total Pages Read:</strong> {summary.totalPages}</p>
                     <p><strong>Total Sessions:</strong> {summary.totalSessions}</p>
                     <p><strong>Books Read:</strong> {summary.totalBooks}</p>
-                    <p><strong>Total Reading Time:</strong> {summary.totalTime}</p>
+                    <p><strong>Total Reading Time:</strong> {formatMin(summary.totalTime)}</p>
                   </div>
               )}
             </div>
@@ -99,7 +103,15 @@ function Sessions() {
               <thead className="bg-gray-300 text-gray-700 border border-border">
                 <tr>
                   {filteredSessions &&
-                    filteredSessions[0].map((header, i) => <th  className="px-4 py-1 cursor-pointer select-none"key={i}>{header}</th>)}
+                    filteredSessions[0].map((header, i) => {
+                      if (skipCellSet.has(i)) return null; // Skip columns in the set
+                      return (
+                        <th className="px-4 py-1 cursor-pointer select-none" key={i}>
+                          {header}
+                        </th>
+                      );
+                    })
+                  }                    
                     </tr>
                   </thead>
                   <tbody className="border border-border">
@@ -113,7 +125,8 @@ function Sessions() {
                         hover:bg-gray-100 dark:hover:bg-gray-700
                         transition
                       `}>
-                        {row.map((cell, j) => {
+                      {row.map((cell, j) => {
+                          if (skipCellSet.has(j)) return null; // Skip columns in the set
                           if (j === 0 || j === 4 || j === 5) {
                             const parsedDate = new Date(cell);
                           
@@ -129,7 +142,7 @@ function Sessions() {
                           
                             return <td  className="px-4 py-1 text-foreground" key={j}>{displayValue}</td>;
                           }
-                          if (j === 9) return <td className="px-4 py-1 text-foreground" key={j}>{formatDuration(cell)}</td>;
+                          if (j === 9) return <td className="px-4 py-1 text-foreground" key={j}>{formatMin(cell)}</td>;
                           return <td className="px-4 py-1 text-foreground" key={j}>{cell}</td>;
                         })}
                       </tr>

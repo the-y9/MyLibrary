@@ -36,6 +36,7 @@ export default function Dashboard() {
       const book = row[1];
       
       const stime = Number(row[9])
+      
       const pagesRead = row[8];
       
       const speed = stime > 0 ? +(pagesRead / stime).toFixed(2) : 0;

@@ -158,33 +158,38 @@ const BookSummary = () => {
           </div>
         </div>
 
-        <div className="table-container overflow-x-auto bg-card rounded-lg shadow">
-          <table className="text-center">
-            <thead>
-              <tr>
-                <th>Book ID</th>
-                <th>Book Title</th>
-                <th>Total Chapters</th>
-                <th>Chapters Completed</th>
-                <th>Last Read Date</th>
-                <th>Total Time (min)</th>
-                <th>% Completed</th>
+        <div className="bg-card rounded-lg shadow overflow-x-auto">
+        <table className="min-w-full text-sm text-left border border-border text-center">
+            <thead className="bg-gray-300 text-gray-700 border border-border">
+              <tr >
+                <th className="px-4 py-1 cursor-pointer select-none">Book Title</th>
+                <th className="px-4 py-1 cursor-pointer select-none">% Completed</th>
+                <th className="px-4 py-1 cursor-pointer select-none">Chapters Completed</th>
+                <th className="px-4 py-1 cursor-pointer select-none">Last Read Date</th>
+                <th  className="px-4 py-1 cursor-pointer select-none">Total Time (min)</th>
+                {/* <th>Book ID</th> */}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="border border-border">
               {filteredData?.slice() // avoid mutating original array
                 .sort(
                   (a, b) =>
                     new Date(b.lastReadDate) - new Date(a.lastReadDate)
                 ).map((book) => (
-                <tr key={book.bookId}>
-                  <td>{book.bookId}</td>
-                  <td>{book.bookTitle}</td>
-                  <td>{book.totalChps ? book.totalChps : "-"}</td>
-                  <td>{book.chaptersCompleted}</td>
-                  <td>{book.lastReadDate}</td>
-                  <td>{formatMinutes(book.totalTimeMinutes)}</td>
-                  <td>{book.percentCompleted}%</td>
+                  <tr key={book.bookId}
+                  className={`
+                    border-t border-gray-200 dark:border-gray-700
+                    odd:bg-gray-50 dark:odd:bg-gray-800
+                    even:bg-white dark:even:bg-gray-900
+                    hover:bg-gray-100 dark:hover:bg-gray-700
+                    transition
+                  `}>
+                    <td className="px-4 py-1 text-foreground">{book.bookTitle}</td>
+                    <td className="px-4 py-1 text-foreground">{book.percentCompleted}%</td>
+                  <td className="px-4 py-1 text-foreground">{book.chaptersCompleted} / {book.totalChps ? book.totalChps : "-"}</td>
+                  <td className="px-4 py-1 text-foreground">{book.lastReadDate}</td>
+                  <td className="px-4 py-1 text-foreground">{formatMinutes(book.totalTimeMinutes)}</td>
+                  {/* <td>{book.bookId}</td> */}
                 </tr>
               ))}
             </tbody>

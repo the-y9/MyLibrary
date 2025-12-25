@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../context/DataContext";
-import "./summary.css";
 import { Menu } from 'lucide-react';
 import { Link } from "react-router-dom";
 import NavSidebar from "./NavSidebar";
@@ -94,25 +93,32 @@ function Sessions() {
                 <SearchAndFilters data={sessions} onFilter={setFilteredSessions} />
             </div>
           </div>
-          <div className="table-container overflow-x-auto bg-card rounded-lg shadow">
-
-                <table>
-                  <thead>
+          
+          <div className="bg-card rounded-lg shadow overflow-x-auto">
+            <table className="min-w-full text-sm text-left border border-border text-center">
+              <thead className="bg-gray-300 text-gray-700 border border-border">
                 <tr>
                   {filteredSessions &&
-                    filteredSessions[0].map((header, i) => <th key={i}>{header}</th>)}
+                    filteredSessions[0].map((header, i) => <th  className="px-4 py-1 cursor-pointer select-none"key={i}>{header}</th>)}
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="border border-border">
                 {filteredSessions &&
                   filteredSessions.slice(1).map((row, i) => (
-                      <tr key={i}>
+                      <tr key={i}
+                      className={`
+                        border-t border-gray-200 dark:border-gray-700
+                        odd:bg-gray-50 dark:odd:bg-gray-800
+                        even:bg-white dark:even:bg-gray-900
+                        hover:bg-gray-100 dark:hover:bg-gray-700
+                        transition
+                      `}>
                         {row.map((cell, j) => {
                           if (j === 0 || j === 4 || j === 5) {
                             const parsedDate = new Date(cell);
                           
                             if (isNaN(parsedDate)) {
-                              return <td key={j}>{cell}</td>; // fallback if not a valid date
+                              return <td className="px-4 py-1 text-foreground" key={j}>{cell}</td>; // fallback if not a valid date
                             }
                           
                             // Show full date+time for j === 0, and time only for j === 4 or j === 5
@@ -121,10 +127,10 @@ function Sessions() {
                                 ? parsedDate.toLocaleString("default", { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) // e.g. "Jan 1, 2023
                                 : parsedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // e.g. "3:45 PM"
                           
-                            return <td key={j}>{displayValue}</td>;
+                            return <td  className="px-4 py-1 text-foreground" key={j}>{displayValue}</td>;
                           }
-                          if (j === 9) return <td key={j}>{formatDuration(cell)}</td>;
-                          return <td key={j}>{cell}</td>;
+                          if (j === 9) return <td className="px-4 py-1 text-foreground" key={j}>{formatDuration(cell)}</td>;
+                          return <td className="px-4 py-1 text-foreground" key={j}>{cell}</td>;
                         })}
                       </tr>
                     ))}

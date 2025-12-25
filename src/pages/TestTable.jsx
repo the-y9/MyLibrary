@@ -16,12 +16,12 @@ function TestTable({ visibleHeaders = []}) {
   return (
     <div className="bg-card rounded-lg shadow overflow-x-auto">
       <table className="min-w-full text-sm text-left border border-border">
-        <thead className="bg-gray-100 text-gray-700 border border-border">
+        <thead className="bg-gray-300 text-gray-700 border border-border">
           <tr>
             {visibleIndexes.map((i) => (
               <th
                 key={i}
-                className="px-4 py-2 cursor-pointer select-none"
+                className="px-4 py-1 cursor-pointer select-none"
                 onClick={() => { }}
               >
                 <div className="flex items-center">
@@ -49,7 +49,7 @@ function TestTable({ visibleHeaders = []}) {
               `}
             >
               {visibleIndexes.map((i) => (
-                <td key={i} className="px-4 py-2 text-foreground">
+                <td key={i} className="px-4 py-1 text-foreground">
                   {row.data[i] instanceof Date
                     ? row.data[i].toLocaleDateString()
                     : row.data[i]}

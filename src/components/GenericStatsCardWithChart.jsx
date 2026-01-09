@@ -92,7 +92,7 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
                     <text
                       x={viewBox.x +  (viewBox.width/2) - 16 } // offset left/right
                       y={viewBox.y +  (viewBox.height/2) - 4}
-                      fill="#6b8073ff"
+                      fill="rgb(107, 111, 128)"
                       fontSize={12}
                     >
                       {Number.isFinite(target) ? target.toFixed(2) : ""}
@@ -102,13 +102,13 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
                 {/* Average line */}
                 <ReferenceLine
                   y={avg}
-                  stroke="#6b8073ff"
+                  stroke="rgb(107, 111, 128)"
                   strokeDasharray="4 4"
                   label={({ viewBox }) => (
                     <text
                       x={viewBox.x +  (viewBox.width/2) + 16 } // offset left/right
                       y={viewBox.y +  (viewBox.height/2) + 12}
-                      fill="#6b8073ff"
+                      fill="rgb(107, 111, 128)"
                       fontSize={12}
                     >
                       {Number.isFinite(avg) ? avg.toFixed(2) : ""}

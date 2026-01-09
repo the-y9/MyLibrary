@@ -7,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   Legend,
+  ReferenceLine
 } from "recharts";
 import COLORS from "./Colors.jsx";
 
@@ -53,6 +54,23 @@ const GenericLineChart = ({
   interval = "daily",
 }) => {
 
+  const averages = lines.map((line) => {
+    const values = data
+      .map(d => d[line.key])
+      .filter(v => typeof v === "number");
+  
+    if (values.length === 0) return null;
+  
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  
+    return {
+      key: line.key,
+      avg,
+      yAxisId: rightAxis && line === lines[lines.length - 1] ? "right" : "left",
+      label: `${line.label || line.key} Avg`
+    };
+  });
+  
   const getLabelAngle = (dataLength) => {
     if (dataLength <= 3) return 0;
     return -Math.min(90, (dataLength - 3) * 3);
@@ -137,6 +155,29 @@ const GenericLineChart = ({
               />
             );
           })}
+
+          {/* average line */}
+          
+            {/* {averages.map(
+              (avgLine, index) =>
+                avgLine && (
+                  <ReferenceLine
+                    key={`avg-${avgLine.key}`}
+                    y={avgLine.avg}
+                    yAxisId={avgLine.yAxisId}
+                    stroke="#6B7280" // Tailwind gray-500
+                    strokeDasharray="5 5"
+                    strokeWidth={1.5}
+                    label={{
+                      value: avgLine.label,
+                      position: "right",
+                      fill: "#6B7280",
+                      fontSize: 12
+                    }}
+                  />
+                )
+            )} */}
+
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LineChart, Line, Tooltip, XAxis } from "recharts";
+import { LineChart, Line, Tooltip, XAxis, ReferenceLine } from "recharts";
 import COLORS from "./Colors"
 
 const CustomTooltip = ({ active, payload, label, CI }) => {
@@ -22,8 +22,9 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
     
     const stat = statd[0]; // could be undefined if array is empty
     const [showInfo, setShowInfo] = useState(false);
-
-    return (
+    const avg = graphData.reduce((sum, d) => sum + d[lineDatakey], 0) / graphData.length;
+    
+  return (
 
         <div className="bg-card p-4 rounded-xl shadow flex justify-between max-w-sm">
             
@@ -75,6 +76,13 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
                 {/* <Tooltip /> */}
                 <Tooltip content={<CustomTooltip CI={CI} />} />
                 <Line type="monotone" dataKey={lineDatakey} stroke={COLORS[CI]} strokeWidth={2} />
+                {/* Average line */}
+                <ReferenceLine
+                  y={avg}
+                  stroke="#6B7280"
+                  strokeDasharray="5 5"
+                  label={{ value: Number.isFinite(avg) ? avg.toFixed(2) : "", position: "auto" }}
+                />
             </LineChart>
 
            

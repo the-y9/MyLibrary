@@ -67,7 +67,7 @@ const GenericLineChart = ({
       key: line.key,
       avg,
       yAxisId: rightAxis && line === lines[lines.length - 1] ? "right" : "left",
-      label: `${line.label || line.key} Avg`
+      label: avg.toFixed(2)
     };
   });
   
@@ -158,25 +158,29 @@ const GenericLineChart = ({
 
           {/* average line */}
           
-            {/* {averages.map(
+            {averages.map(
               (avgLine, index) =>
                 avgLine && (
                   <ReferenceLine
                     key={`avg-${avgLine.key}`}
                     y={avgLine.avg}
                     yAxisId={avgLine.yAxisId}
-                    stroke="#6B7280" // Tailwind gray-500
-                    strokeDasharray="5 5"
+                    stroke={avgLine.color || COLORS[index % COLORS.length]}
+                    strokeDasharray={index % 2 === 0 ? "5 5" : "3 3"}
                     strokeWidth={1.5}
-                    label={{
-                      value: avgLine.label,
-                      position: "right",
-                      fill: "#6B7280",
-                      fontSize: 12
-                    }}
+                    label={({ viewBox }) => (
+                      <text
+                        x={viewBox.x + (index % 2 === 0 ? (viewBox.width/2) - 16 : (viewBox.width/2) + 16)} // offset left/right
+                        y={viewBox.y + (index % 2 === 0 ? (viewBox.height/2) - 4 : (viewBox.height/2) + 12)}
+                        fill={avgLine.color || COLORS[index % COLORS.length]}
+                        fontSize={12}
+                      >
+                        {avgLine.label}
+                      </text>
+                    )}
                   />
                 )
-            )} */}
+            )}
 
         </LineChart>
       </ResponsiveContainer>

@@ -170,10 +170,10 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
 
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <GenericStatsCardWithChart statd={accuracyStats}  graphData={accuracyData} lineDatakey="Accuracy %" CI={7}/>
+            <GenericStatsCardWithChart statd={accuracyStats} graphData={accuracyData} lineDatakey="Accuracy %" CI={7} target={0.9} />
             <GenericStatsCardWithChart statd={readinessStats}  graphData={readinessData} lineDatakey="Readiness" CI={8} />
-            <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" CI={10} />
-            <GenericStatsCardWithChart statd={quicknessStats} graphData={quicknessData} lineDatakey="Quickness" CI={11} info={"Time(s) / Q"} />  
+            <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" CI={10} target={0.65} />
+            <GenericStatsCardWithChart statd={quicknessStats} graphData={quicknessData} lineDatakey="Quickness" CI={11} info={"Time(s) / Q, < 72s"} />  
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
             <GenericStatsCardWithChart statd={prindexStats}  graphData={prindexData} lineDatakey="PRIndex" CI={12} info = "Readiness * Accuracy"/>

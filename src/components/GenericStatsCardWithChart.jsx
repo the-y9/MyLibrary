@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LineChart, Line, Tooltip, XAxis, ReferenceLine } from "recharts";
+import { LineChart, Line, Tooltip, XAxis, YAxis, ReferenceLine } from "recharts";
 import COLORS from "./Colors"
 
 const CustomTooltip = ({ active, payload, label, CI }) => {
@@ -15,7 +15,7 @@ const CustomTooltip = ({ active, payload, label, CI }) => {
 
   
 const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "timestamp",
-    lineDatakey,
+    lineDatakey, target,
     info = null,
     CI = 9,
     chartStyle = { width: "100%", maxWidth: "200px", maxHeight: "100px", aspectRatio: 1.618 } }) => {
@@ -71,18 +71,52 @@ const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "tim
             <LineChart
                 style={chartStyle}
                 data={graphData}
-            >
+      >
+         {/* Y-axis that includes target and avg */}
+          <YAxis hide
+            domain={[
+              (dataMin) => Math.min(0, target ?? dataMin, avg ?? dataMin),
+              (dataMax) => Math.max(dataMax, target ?? dataMax, avg ?? dataMax) * 1.1
+            ]}
+          />
                 <XAxis dataKey={xaxisKey} hide />
                 {/* <Tooltip /> */}
                 <Tooltip content={<CustomTooltip CI={CI} />} />
                 <Line type="monotone" dataKey={lineDatakey} stroke={COLORS[CI]} strokeWidth={2} />
+                {/* Target line */}
+                <ReferenceLine
+                  y={target}
+                  stroke="#6e6b80ff"
+                  strokeDasharray="8 8"
+                  label={({ viewBox }) => (
+                    <text
+                      x={viewBox.x +  (viewBox.width/2) - 16 } // offset left/right
+                      y={viewBox.y +  (viewBox.height/2) - 4}
+                      fill="#6b8073ff"
+                      fontSize={12}
+                    >
+                      {Number.isFinite(target) ? target.toFixed(2) : ""}
+                    </text>
+                  )}
+                />
                 {/* Average line */}
                 <ReferenceLine
                   y={avg}
-                  stroke="#6B7280"
-                  strokeDasharray="5 5"
-                  label={{ value: Number.isFinite(avg) ? avg.toFixed(2) : "", position: "auto" }}
+                  stroke="#6b8073ff"
+                  strokeDasharray="4 4"
+                  label={({ viewBox }) => (
+                    <text
+                      x={viewBox.x +  (viewBox.width/2) + 16 } // offset left/right
+                      y={viewBox.y +  (viewBox.height/2) + 12}
+                      fill="#6b8073ff"
+                      fontSize={12}
+                    >
+                      {Number.isFinite(avg) ? avg.toFixed(2) : ""}
+                    </text>
+                  )}
                 />
+
+                
             </LineChart>
 
            

@@ -343,7 +343,7 @@ export default function Dashboard() {
         {/* Stats Cards */}
         <GenericStatsCards stats={statsData.slice(0, statsData.length - 2)} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-          <GenericStatsCardWithChart statd={statsData.slice(-2)} graphData={chartData} lineDatakey="Chapters_Completed"/>
+          <GenericStatsCardWithChart statd={statsData.slice(-2)} graphData={chartData} lineDatakey="Chapters_Completed" target={0.5} />
           <GenericStatsCardWithChart statd={statsData.slice(-1)} graphData={chartData} lineDatakey="speed" CI={16} />
         </div>
 

@@ -5,12 +5,11 @@ import { Menu } from "lucide-react";
 import NavSidebar from "./NavSidebar";
 import SideBar from '../components/SideBar';
 import GenericStatsCardWithChart from "../components/GenericStatsCardWithChart.jsx";
+import { changeForm } from "../utils/misc";
 
 function Tests() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [interval, setInterval] = useState("daily");
-
   const dateForm = undefined; // optional locale
 
   return (
@@ -19,8 +18,8 @@ function Tests() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         interval={interval}
-              dateForm={dateForm}
-              setInterval={setInterval}
+        dateForm={dateForm}
+        setInterval={setInterval}
       />
     </TestDataProvider>
   );
@@ -87,14 +86,7 @@ function useChartData(tests, lineDatakey, interval = "daily") {
     }, [tests, lineDatakey, interval]);
 }
 
-// Helper to calculate percentage or absolute change
-function changeForm(current, previous) {
-  if (previous === 0) return ""; // avoid divide by zero
-  const diff = current - previous;
-  const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
-  const percent = previous !== 0 ? Math.abs((diff / previous) * 100).toFixed(1) + "%" : "";
-  return `${sign}${percent}`;
-}
+
 
 // Hook to compute stats data for GenericStatsCardWithChart
  function useStatsData(chartData, lineDatakey, reverse) {

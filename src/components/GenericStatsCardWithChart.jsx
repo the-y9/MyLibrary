@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LineChart, Line, Tooltip, XAxis, YAxis, ReferenceLine } from "recharts";
 import COLORS from "./Colors"
+import { fNum } from "../utils/misc";
 
 const CustomTooltip = ({ active, payload, label, CI }) => {
     if (!active || !payload || payload.length === 0) return null;
@@ -8,7 +9,7 @@ const CustomTooltip = ({ active, payload, label, CI }) => {
     return (
       <div className="p-2 rounded-lg shadow bg-card border border-border">
         <p className="text-xs mb-1">{label}</p>
-            <p className="text-s font-semibold" style={{ color: COLORS[CI] }}>{payload[0].value}</p>
+            <p className="text-s font-semibold" style={{ color: COLORS[CI] }}>{fNum(payload[0].value)}</p>
       </div>
     );
   };

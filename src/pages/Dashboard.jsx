@@ -9,6 +9,7 @@ import GenericLineChart from '../components/GenericLineChart';
 import GenericStatsCards from '../components/GenericStatsCard';
 import GenericPieChart from '../components/GenericPieChart';
 import GenericStatsCardWithChart from '../components/GenericStatsCardWithChart';
+import { make_targets } from "../utils/misc";
 
 const dateForm = "default"; 
 const changeForm = (final, initial) => {
@@ -343,7 +344,7 @@ export default function Dashboard() {
         {/* Stats Cards */}
         <GenericStatsCards stats={statsData.slice(0, statsData.length - 2)} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-          <GenericStatsCardWithChart statd={statsData.slice(-2)} graphData={chartData} lineDatakey="Chapters_Completed" target={0.5} />
+          <GenericStatsCardWithChart statd={statsData.slice(-2)} graphData={chartData} lineDatakey="Chapters_Completed" target={make_targets(0.5, interval)} />
           <GenericStatsCardWithChart statd={statsData.slice(-1)} graphData={chartData} lineDatakey="speed" CI={16} />
         </div>
 

@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Tests from "./pages/Tests";
 import Syllabus from "./pages/Syllabus"
 import Feedback from "./pages/Feedback"
-
+import AddSession from "./pages/AddSession";
 
 function App() {
   return (<>
@@ -19,6 +19,7 @@ function App() {
         <Route path="/tests" element={<Tests />} />
         <Route path="/syllabus" element={<Syllabus />} />
         <Route path="/fb" element={<Feedback />} />
+        <Route path="/add-session" element={<AddSession />} />
       </Routes>
     </Router>
   

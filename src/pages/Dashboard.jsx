@@ -336,7 +336,7 @@ export default function Dashboard() {
               <Menu size={22} />
             </button>
             <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-              <Link to="https://forms.gle/AUyCFVASWgtFVJg69" target="blank"> + New Session</Link>
+              <Link to="/add-session"> + New Session</Link>
             </button>
           </div>
         </div>

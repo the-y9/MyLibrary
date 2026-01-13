@@ -54,3 +54,19 @@ export const formatMin = (m) => {
 
   return `${totalMinutes} min`;
 };
+
+export function to24HourFormat(hour, minute, ampm) {
+  const hourNum = Number(hour);
+  let hour24;
+
+  if (ampm.toUpperCase() === "AM") {
+    hour24 = hourNum === 12 ? 0 : hourNum; // 12 AM → 0
+  } else {
+    hour24 = hourNum === 12 ? 12 : hourNum + 12; // 12 PM → 12, 1-11 PM → +12
+  }
+
+  const hourStr = hour24.toString().padStart(2, "0");
+  const minuteStr = minute.toString().padStart(2, "0");
+
+  return `${hourStr}:${minuteStr}`;
+}

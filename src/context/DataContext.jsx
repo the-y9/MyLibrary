@@ -57,6 +57,7 @@ export const DataProvider = ({ children }) => {
           bookTitle: cells[1],
           totalPages: Number(cells[8] || 0),
           totalChps: Number(cells[9] || 0),
+          tags: cells[3] ? cells[3].split(",").map((t) => t.trim()) : [],
         };
       });
   

@@ -123,7 +123,7 @@ const BookSessionPage = () => {
         body: payload,
           });
         
-        console.log("Payload as object:", Object.fromEntries(payload.entries()));
+        // console.log("Payload as object:", Object.fromEntries(payload.entries()));
 
       handleClear()
       

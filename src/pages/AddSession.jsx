@@ -187,7 +187,7 @@ const BookSessionPage = () => {
 
             <div>
               <BookTitleDropdown value={formData.bookTitle} onChange={(val) => setFormData({ ...formData, bookTitle: val })} />
-                      </div>
+            </div>
                       
                       {/* page numbes */}
             <div className="flex gap-4">
@@ -214,7 +214,7 @@ const BookSessionPage = () => {
             </div>
 
                       {/* time */}
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
                 <label className="block font-medium mb-1">Start Time</label>
                 <div className="flex gap-2">
@@ -297,7 +297,7 @@ const BookSessionPage = () => {
                 name="chNo"
                 value={formData.chNo}
                 onChange={handleChange}
-                className="w-20 p-2 mt-1 border rounded-md bg-white text-black dark:bg-gray-800 dark:text-white"
+                className="w-16 p-2 mt-1 border rounded-md bg-white text-black dark:bg-gray-800 dark:text-white"
                               />
               <input type="text" disabled value="—" className="w-8 p-2 mt-1 rounded-md"/>
 
@@ -376,7 +376,7 @@ const BookSessionPage = () => {
                     </div>
 
 
-
+            {/* btns */}
             <div className="flex gap-4 mt-4">
               <button
                 type="submit"
@@ -391,20 +391,20 @@ const BookSessionPage = () => {
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
               >
                 Clear
-                          </button>
+              </button>
                           
-                          <div
-            className={`relative p-4 flex items-center transition-all duration-300 min-h-[4rem] ${
-              status === "success" ? "text-green-800 dark:text-green-200"
-                : status === "error" ? "text-red-800 dark:text-red-200"
-                : "text-transparent"
-            }`}
-          >
-            <span className={`flex-1 transition-opacity duration-500 ${status ? "opacity-100" : "opacity-0"}`}>
-              {status === "success" ? "✔" : status === "error" ? "✘" : ""}
-            </span>
-                              
-          </div>
+              <div
+              className={`relative p-4 flex items-center transition-all duration-300 min-h-[4rem] ${
+                status === "success" ? "text-green-800 dark:text-green-200"
+                  : status === "error" ? "text-red-800 dark:text-red-200"
+                  : "text-transparent"
+              }`}
+              >
+              <span className={`flex-1 transition-opacity duration-500 ${status ? "opacity-100" : "opacity-0"}`}>
+                {status === "success" ? "✔" : status === "error" ? "✘" : ""}
+              </span>
+                                
+              </div>
             </div>
           </form>
         </div>

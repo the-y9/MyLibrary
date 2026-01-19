@@ -364,9 +364,11 @@ export default function Dashboard() {
             <button
               key={option}
               onClick={() => setInterval(option)}
-              className={`px-3 py-1 rounded ${
-                interval === option ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-              }`}
+              className={`px-3 py-1 rounded whitespace-nowrap ${
+                interval === option
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-white dark:border-gray-900 "
+            }`}
             >
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </button>

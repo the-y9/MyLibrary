@@ -55,7 +55,9 @@ const BookTitleDropdown = ({ value, onChange }) => {
   };
 
     return (<>
-        <div className="relative w-full flex gap-2 mb-4 overflow-x-auto">
+        <div className="relative w-full flex gap-2 mb-4 overflow-x-auto
+  [color-scheme:light] dark:[color-scheme:dark]
+  scrollbar-none md:scrollbar-auto">
             {uniqueTags.map((option) => (
                 <button
                 type="button"

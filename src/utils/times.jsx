@@ -36,7 +36,14 @@ export const formatSeconds = (totalSeconds) => {
     const mm = minutes.toString().padStart(2, "0");
     const ss = seconds.toString().padStart(2, "0");
     return `${hours}:${mm}:${ss}`;
-  };
+};
+  
+export const minToHr = (totalMin) => {
+  const hours = Math.floor(totalMin / 60);
+  const minutes = Math.floor(totalMin % 60 );
+  const mm = minutes.toString().padStart(2, "0");
+  return `${hours}:${mm}`;
+};
 
   export const formatDuration = (dateStr) => {
     const totalSeconds = durationStrToSeconds(dateStr);

@@ -13,6 +13,7 @@ const BookSummary = () => {
   const [bookSummary, setBookSummary] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState(null);
 
   // -------------------------------
   // 🧠 Compute Book Summary
@@ -41,7 +42,25 @@ const BookSummary = () => {
       const book = bookMap[bookId];
       const pagesRead = Number(row[8] || 0);
       const timestamp = row[0];
-      const sessionTime = Number(row[9]);
+      
+      const getSessionMinutes = (value) => {
+        // Google Sheets Date object
+        if (value instanceof Date) {
+          return value.getHours() * 60 + value.getMinutes();
+        }
+      
+        // Google Sheets date string
+        if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+          const date = new Date(value);
+          return date.getHours() * 60 + date.getMinutes();
+        }
+      
+        // Minutes (number or numeric string)
+        const minutes = Number(value);
+        return Number.isFinite(minutes) ? minutes : 0;
+      };
+      const sessionTime = getSessionMinutes(row[9]);
+      
       const chapter = row[6];
 
       book.totalPagesRead += pagesRead;
@@ -81,6 +100,7 @@ const BookSummary = () => {
                           : 0,
 
         chaptersCompleted: book.chapters.size,
+        chapters: Array.from(book.chapters).sort(),
       };
     });
 
@@ -177,7 +197,12 @@ const BookSummary = () => {
                     new Date(b.lastReadDate) - new Date(a.lastReadDate)
                 ).map((book) => (
                   <tr key={book.bookId}
+                    onClick={() =>
+                      setSelectedBookId(
+                        selectedBookId === book.bookId ? null : book.bookId
+                      )}
                   className={`
+                    cursor-pointer
                     border-t border-gray-200 dark:border-gray-700
                     odd:bg-gray-50 dark:odd:bg-gray-800
                     even:bg-white dark:even:bg-gray-900

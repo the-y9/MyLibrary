@@ -16,15 +16,30 @@ const CustomTooltip = ({ active, payload, label, CI }) => {
 
   
 const GenericStatsCardWithChart = ({ statd = [], graphData = [], xaxisKey = "timestamp",
-    lineDatakey, target,
-    info = null,
+    lineDatakey, target, avg,
+    info = null, exclude_zero=false,
     CI = 9,
     chartStyle = { width: "100%", maxWidth: "200px", maxHeight: "100px", aspectRatio: 1.618 } }) => {
     
     const stat = statd[0]; // could be undefined if array is empty
     const [showInfo, setShowInfo] = useState(false);
-    const avg = graphData.reduce((sum, d) => sum + d[lineDatakey], 0) / graphData.length;
-    
+    let sum = 0;
+let count = 0;
+
+graphData.forEach(d => {
+  const value = d[lineDatakey];
+  if (!exclude_zero || value !== 0) {
+    sum += value;
+    count++;
+  }
+});
+  
+if (avg === undefined) {
+  avg = count > 0 ? sum / count : 0;
+}
+
+ 
+  
   return (
 
         <div className="bg-card p-4 rounded-xl shadow flex justify-between max-w-sm">

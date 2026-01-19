@@ -120,14 +120,14 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
     const { tests } = useContext(TestDataContext);
     const { refresh, setRefresh } = useContext(TestDataContext);
 
-  const accuracyData = useChartData(tests, "Accuracy %", interval);
+  const precisionData = useChartData(tests, "Precision %", interval);
   const readinessData = useChartData(tests, "Readiness", interval);
   const scoreData = useChartData(tests, "Score %", interval);
   const quicknessData = useChartData(tests, "Quickness", interval);
   const prindexData = useChartData(tests, "PRIndex", interval);
   const preindexData = useChartData(tests, "PREIndex", interval);
 
-  const accuracyStats = useStatsData(accuracyData, "Accuracy %");
+  const precisionStats = useStatsData(precisionData, "Precision %");
   const readinessStats = useStatsData(readinessData, "Readiness");
   const scoreStats = useStatsData(scoreData, "Score %");
   const quicknessStats = useStatsData(quicknessData, "Quickness", "reverse");
@@ -162,13 +162,13 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
 
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <GenericStatsCardWithChart statd={accuracyStats} graphData={accuracyData} lineDatakey="Accuracy %" CI={7} target={0.9} />
+            <GenericStatsCardWithChart statd={precisionStats} graphData={precisionData} lineDatakey="Precision %" CI={7} target={0.9} />
             <GenericStatsCardWithChart statd={readinessStats}  graphData={readinessData} lineDatakey="Readiness" CI={8} />
             <GenericStatsCardWithChart statd={scoreStats}  graphData={scoreData} lineDatakey="Score %" CI={10} target={0.65} />
             <GenericStatsCardWithChart statd={quicknessStats} graphData={quicknessData} lineDatakey="Quickness" CI={11} info={"Time(s) / Q, < 72s"} />  
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
-            <GenericStatsCardWithChart statd={prindexStats}  graphData={prindexData} lineDatakey="PRIndex" CI={12} info = "Readiness * Accuracy"/>
+            <GenericStatsCardWithChart statd={prindexStats}  graphData={prindexData} lineDatakey="PRIndex" CI={12} info = "Readiness * Precision"/>
             <GenericStatsCardWithChart statd={preindexStats} graphData={preindexData} lineDatakey="PREIndex" CI={13} info = "(PR/quickness) max is 72"/>  
           </div>
           
@@ -190,7 +190,7 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
 
           <h1>Tests</h1>
           <TestTable
-            visibleHeaders={["Date", "Test Name", "Total Qs", "Attempted", "Correct", "Wrong", "Unattempted", "Score", "Accuracy %", "Time (min)", "Readiness"]}
+            visibleHeaders={["Date", "Test Name", "Total Qs", "Attempted", "Correct", "Wrong", "Unattempted", "Score", "Precision %", "Time (min)", "Readiness"]}
           />
         </div>
       </main>

@@ -55,7 +55,7 @@ export const TestDataProvider = ({ children }) => {
       // Indices of columns that should be treated as numbers
       const numericCols = [
         "Total Qs", "Reward", "Penalty", "Attempted", "Correct", "Wrong", "Unattempted",
-        "Score", "Score %", "Accuracy %", "Time (min)", "Readiness", "Quickness",
+        "Score", "Score %", "Precision %", "Time (min)", "Readiness", "Quickness",
         "PRIndex", "PREIndex",
         "Polity", "History", "Geography", "Economy", "Environment & Ecology",
         "Science & Tech", "Current Affairs", "Miscellaneous", 

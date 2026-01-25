@@ -110,32 +110,31 @@ const bookChapterMap = useMemo(() => {
         }
         
         // Auto-compute chapter (with auto-fill from past sessions)
-if (["chNo", "chName", "bookTitle"].includes(name)) {
-  const chapters = bookChapterMap.get(updated.bookTitle);
-  let chapterName = updated.chName;
+      if (["chNo", "chName", "bookTitle"].includes(name)) {
+        const chapters = bookChapterMap.get(updated.bookTitle);
+        let chapterName = updated.chName;
 
-  // Auto-fill ONLY when chapter number changes
-  // and user hasn't manually typed a name yet
-  if (name === "chNo" && chapters?.length && !updated.chName) {
-    const foundName = findChapterName(chapters, updated.chNo);
-    if (foundName) {
-      chapterName = foundName;
-    }
-  }
+        // Auto-fill ONLY when chapter number changes
+        // and user hasn't manually typed a name yet
+        if (name === "chNo" && chapters?.length && !updated.chName) {
+          const foundName = findChapterName(chapters, updated.chNo);
+          if (foundName) {
+            chapterName = foundName;
+          }
+        }
 
-  updated.chName = chapterName;
+        updated.chName = chapterName;
 
-  updated.chapter =
-    updated.chNo && chapterName
-      ? `${updated.chNo} - ${chapterName}`
-      : updated.chNo
-      ? updated.chNo
-      : chapterName
-      ? chapterName
-      : "";
-}
+        updated.chapter =
+          updated.chNo && chapterName
+            ? `${updated.chNo} - ${chapterName}`
+            : updated.chNo
+            ? updated.chNo
+            : chapterName
+            ? chapterName
+            : "";
+      }
 
-  
       return updated;
     });
   };
@@ -334,7 +333,7 @@ if (["chNo", "chName", "bookTitle"].includes(name)) {
                 onChange={handleChange}
                 className="w-16 p-2 mt-1 border rounded-md bg-white text-black dark:bg-gray-800 dark:text-white"
                               />
-              <input type="text" disabled value="—" className="w-8 p-2 mt-1 rounded-md"/>
+              <input type="text" disabled value="—" className="w-8 p-2 mt-1 rounded-md bg-white text-black dark:bg-gray-800 dark:text-white"/>
 
 
                           <input

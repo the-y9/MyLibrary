@@ -77,3 +77,17 @@ export function to24HourFormat(hour, minute, ampm) {
 
   return `${hourStr}:${minuteStr}`;
 }
+
+export const getSessionMinutes = (value) => {
+  if (value instanceof Date) {
+    return value.getHours() * 60 + value.getMinutes();
+  }
+
+  if (typeof value === "string" && !isNaN(Date.parse(value))) {
+    const date = new Date(value);
+    return date.getHours() * 60 + date.getMinutes();
+  }
+
+  const minutes = Number(value);
+  return Number.isFinite(minutes) ? minutes : 0;
+};

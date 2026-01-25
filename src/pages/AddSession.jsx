@@ -5,10 +5,27 @@ import { Menu } from "lucide-react";
 import BookTitleDropdown from "../components/BookTitleDropdown";
 import { to24HourFormat } from "../utils/times";
 
+import { useContext, useMemo } from "react";
+import { DataContext } from "../context/DataContext";
+import { useBookSummary } from "../hooks/useBookSummary";
+import { findChapterName } from "../utils/selectors/bookSelectors";
+
+
 const FORM_ID = process.env.REACT_APP_BS_FORM_ID
 const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
 
 const BookSessionPage = () => {
+  const { books, sessions } = useContext(DataContext);
+const { summary } = useBookSummary(sessions, books);
+
+const bookChapterMap = useMemo(() => {
+  const map = new Map();
+  summary.forEach((book) => {
+    map.set(book.bookTitle, book.chapters);
+  });
+  return map;
+}, [summary]);
+
     const [formData, setFormData] = useState({
         email: "",
         bookTitle: "",
@@ -65,7 +82,8 @@ const BookSessionPage = () => {
         chName: "",
         type: "",
         notes: "",
-      });
+    });
+    setNoteOption("");
     setStatus("");
   };
 
@@ -91,15 +109,32 @@ const BookSessionPage = () => {
         updated.endTime = to24HourFormat(hour, minute, ampm);
         }
         
-        // Auto-comput chapter
-        if (["chNo", "chName"].includes(name)) {
-            const cno = updated.chNo || "";
-            const cname = updated.chName || "";
-            updated.chapter = cno && cname ? `${cno} - ${cname}`
-                        : cno ? cno
-                        : cname ? cname
-                        : "";
-        }
+        // Auto-compute chapter (with auto-fill from past sessions)
+if (["chNo", "chName", "bookTitle"].includes(name)) {
+  const chapters = bookChapterMap.get(updated.bookTitle);
+  let chapterName = updated.chName;
+
+  // Auto-fill ONLY when chapter number changes
+  // and user hasn't manually typed a name yet
+  if (name === "chNo" && chapters?.length && !updated.chName) {
+    const foundName = findChapterName(chapters, updated.chNo);
+    if (foundName) {
+      chapterName = foundName;
+    }
+  }
+
+  updated.chName = chapterName;
+
+  updated.chapter =
+    updated.chNo && chapterName
+      ? `${updated.chNo} - ${chapterName}`
+      : updated.chNo
+      ? updated.chNo
+      : chapterName
+      ? chapterName
+      : "";
+}
+
   
       return updated;
     });

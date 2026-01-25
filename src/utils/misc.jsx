@@ -42,3 +42,27 @@ export function changeForm(current, previous) {
 //formats number whole numbe decimal tot 2
 export const fNum = (v) =>
     Number.isInteger(+v) ? +v : (+v).toFixed(2);
+
+// extracts unique chapters
+export const getChaptersVisited = (rows) => {
+    const chapters = new Set();
+  
+    rows.forEach((row) => {
+      const chapter = row[6]; // chapter column index
+      if (chapter) {
+        chapters.add(chapter.trim());
+      }
+    });
+  
+    return Array.from(chapters).sort();
+  };
+  
+//   compute chapters per book
+export  const getBookChapters = (sessions, bookId) => {
+    const dataRows = sessions.slice(1);
+  
+    return getChaptersVisited(
+      dataRows.filter(row => row[10] === bookId)
+    );
+  };
+  

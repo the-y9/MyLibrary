@@ -59,7 +59,13 @@ useEffect(() => {
   const { chartData, pieData, statsData, recentData, isCalculating } = data;
 
   if (chartData.length === 0 && !isCalculating) {
-    return <div className="p-10 text-center">Loading data ...</div>;
+    return (<div className="flex min-h-screen bg-background text-foreground transition-colors duration-300">
+      <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} navComponent={NavSidebar} />
+
+      <main className={`flex-1 p-4 sm:p-6 space-y-6 w-full transition-opacity ${isCalculating ? 'opacity-50' : 'opacity-100'}`}>
+        <div className="flex justify-between items-center">Loading ...</div>
+      </main>
+      </div>)
   }
 
   return (

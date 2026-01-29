@@ -17,6 +17,7 @@ const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${FORM_ID}/formRespon
 const BookSessionPage = () => {
   const { books, sessions } = useContext(DataContext);
 const { summary } = useBookSummary(sessions, books);
+const [isSubmitting, setIsSubmitting] = useState(false);
 
 const bookChapterMap = useMemo(() => {
   const map = new Map();
@@ -141,6 +142,9 @@ const bookChapterMap = useMemo(() => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (isSubmitting) return; // extra safety
+    setIsSubmitting(true);
 
     const payload = new URLSearchParams();
     Object.keys(FIELD_IDS).forEach((key) => {
@@ -162,11 +166,13 @@ const bookChapterMap = useMemo(() => {
       handleClear()
       
       setStatus("success");
+      setIsSubmitting(false); // re-enable after success
 
       setTimeout(() => setStatus(""), 15000); // hide after 5 seconds
     } catch (err) {
       console.error(err);
       setStatus("error");
+      setIsSubmitting(false); // re-enable after success
     }
   };
 
@@ -414,9 +420,12 @@ const bookChapterMap = useMemo(() => {
             <div className="flex gap-4 mt-4">
               <button
                 type="submit"
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                disabled={isSubmitting}
+                aria-disabled={isSubmitting}
+                className={`bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 
+                  ${isSubmitting ? "opacity-50 cursor-not-allowed hover:bg-green-600" : ""}`}
               >
-                Submit
+                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
 
               <button

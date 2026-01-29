@@ -91,3 +91,24 @@ export const getSessionMinutes = (value) => {
   const minutes = Number(value);
   return Number.isFinite(minutes) ? minutes : 0;
 };
+
+
+export const getDateKey = (date, interval) => {
+  const DATE_FORM = "default"; 
+  
+  switch (interval) {
+    case "daily":
+      return date.toLocaleDateString(DATE_FORM, { month: "short", day: "numeric", year: "numeric" });
+    case "weekly": {
+      const d = new Date(date);
+      d.setDate(d.getDate() - d.getDay() + 1); // Monday
+      return d.toLocaleDateString(DATE_FORM, { month: "short", day: "numeric", year: "numeric" });
+    }
+    case "monthly":
+      return date.toLocaleDateString(DATE_FORM, { month: "short", year: "numeric" });
+    case "yearly":
+      return String(date.getFullYear());
+    default:
+      return date.toLocaleDateString();
+  }
+};

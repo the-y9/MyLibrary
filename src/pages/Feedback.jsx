@@ -10,6 +10,7 @@ const FeedbackPage = () => {
   const [feedback, setFeedback] = useState("");
   const [status, setStatus] = useState(""); // success or error
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Replace these with your actual field IDs from Google Form
   const FIELD_IDS = {
@@ -18,6 +19,9 @@ const FeedbackPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (isSubmitting) return; // extra safety
+    setIsSubmitting(true);
 
     // Build the payload
     const payload = new URLSearchParams({
@@ -37,9 +41,13 @@ const FeedbackPage = () => {
       // Reset form and show success
       setFeedback("");
       setStatus("success");
+      setIsSubmitting(false); // re-enable after success
+
     } catch (err) {
       console.error(err);
       setStatus("error");
+      setIsSubmitting(false); // re-enable after success
+
     }
   };
 
@@ -88,9 +96,12 @@ const FeedbackPage = () => {
           </label>
         </div>
         <div className="flex justify-start gap-4">
-            <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-            type="submit">
-               Submit
+            <button className={`bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 
+                  ${isSubmitting ? "opacity-50 cursor-not-allowed hover:bg-green-600" : ""}`}
+            type="submit"
+            disabled={isSubmitting}
+            aria-disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit"}
             </button>
         
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-gray-500"

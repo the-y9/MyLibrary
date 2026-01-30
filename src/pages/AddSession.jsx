@@ -117,7 +117,7 @@ const bookChapterMap = useMemo(() => {
 
         // Auto-fill ONLY when chapter number changes
         // and user hasn't manually typed a name yet
-        if (name === "chNo" && chapters?.length && !updated.chName) {
+        if (name === "chNo" && chapters?.length ){  //&& !updated.chName) {
           const foundName = findChapterName(chapters, updated.chNo);
           if (foundName) {
             chapterName = foundName;

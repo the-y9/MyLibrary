@@ -1,6 +1,7 @@
 // src/utils/dataWorker.js
 /* eslint-disable no-restricted-globals */
 import { formatMin } from "./times";
+import { fNum } from "./misc";
 
 const DATE_FORM = "default";
 
@@ -130,7 +131,7 @@ self.onmessage = (e) => {
       id: item.timestamp,
       label: item.chapter || "Chapter",
       subtitle: `${item.book} · ${new Date(item.timestamp).toLocaleDateString()}`,
-      value: `${item.pages} pages · ${formatMin(item.time)} min`,
+      value: `${item.pages} pages · ${formatMin(item.time)} · ${fNum(item.pages/item.time)} p/m`,
       status: item.status || "Pending",
     }));
 

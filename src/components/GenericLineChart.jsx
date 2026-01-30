@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import COLORS from "./Colors.jsx";
 import { fNum } from "../utils/misc";
+import { formatMin } from "../utils/times";
+
 
 const CustomTooltip = ({ active, payload, label, formatter }) => {
   if (!active || !payload || payload.length === 0) return null;
@@ -176,7 +178,7 @@ const GenericLineChart = ({
                         fill={avgLine.color || COLORS[index % COLORS.length]}
                         fontSize={12}
                       >
-                        {fNum(avgLine.label)}
+                        {index % 2 === 0 ? (fNum(avgLine.label)) : formatMin(fNum(avgLine.label))}
                       </text>
                     )}
                   />

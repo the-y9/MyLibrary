@@ -106,8 +106,8 @@ if (avg === undefined) {
                   strokeDasharray="8 8"
                   label={({ viewBox }) => (
                     <text
-                      x={viewBox.x +  (viewBox.width/2) - 16 } // offset left/right
-                      y={viewBox.y +  (viewBox.height/2) - 4}
+                      x={viewBox.x} // offset left/right
+                      y={viewBox.y +  (viewBox.height/2)}
                       fill="rgb(107, 111, 128)"
                       fontSize={12}
                     >
@@ -118,13 +118,13 @@ if (avg === undefined) {
                 {/* Average line */}
                 <ReferenceLine
                   y={avg}
-                  stroke="rgb(107, 111, 128)"
+                  stroke={COLORS[CI]}
                   strokeDasharray="4 4"
                   label={({ viewBox }) => (
                     <text
                       x={viewBox.x +  (viewBox.width/2) + 16 } // offset left/right
-                      y={viewBox.y +  (viewBox.height/2) + 12}
-                      fill="rgb(107, 111, 128)"
+                      y={viewBox.y }
+                      fill={COLORS[CI]}
                       fontSize={12}
                     >
                       {Number.isFinite(avg) ? avg.toFixed(2) : ""}

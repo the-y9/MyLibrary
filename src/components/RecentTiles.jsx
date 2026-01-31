@@ -35,7 +35,7 @@ const DataListCard = ({
               className="flex justify-between items-center border p-3 rounded-lg"
             >
               <div>
-                <p className="font-medium">
+                <p className="font-muted">
                   {item[label] ?? `Item ${item[keyField] ?? index}`}
                 </p>
 
@@ -44,10 +44,10 @@ const DataListCard = ({
                   <p className="font-semibold text-sm text-foreground">{topicExtra}</p>
                 )}
 
-                <p className="text-sm text-gray-500">{item[subtitle] || ""}</p>
+                <p className="text-sm text-muted-foreground">{item[subtitle] || ""}</p>
 
                 {item[value] && (
-                  <p className="font-semibold">{item[value]}</p>
+                  <p className="font-bold">{item[value]}</p>
                 )}
               </div>
 

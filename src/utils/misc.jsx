@@ -40,9 +40,21 @@ export function changeForm(current, previous) {
 }
 
 //formats number whole numbe decimal tot 2
-export const fNum = (v) =>
-    Number.isInteger(+v) ? +v : (+v).toFixed(2);
+export const fNum = (v) =>{
+    if (v) {
+    return Number.isInteger(+v) ? +v : (+v).toFixed(2);
+}   return 
+}
 
+export const pNum = (v) => {
+    if (v == null) return { value: v, display: v };
+  
+    return {
+      value: v,
+      display: fNum(v*100) + "%",
+    };
+  };
+  
 // extracts unique chapters
 export const getChaptersVisited = (rows) => {
     const chapters = new Set();

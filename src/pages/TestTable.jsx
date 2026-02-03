@@ -1,17 +1,30 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { TestDataContext } from "../context/TestDataContext";
+import {fNum, pNum} from "../utils/misc"
 
-function TestTable({ visibleHeaders = []}) {
+
+function TestTable({ visibleHeaders = [] }) {
+  
   const { tests } = useContext(TestDataContext);
-// console.log(tests);
+console.log(tests);
 
- 
+  const FNUM_COLS = useMemo(() => new Set([2, 5, 6, 7, 9]), []);
+  const PNUM_COLS = useMemo(() => new Set([11,12]), []);
+  
+
+  const formatCell = (value, index) => {
+  if (value instanceof Date) return value.toLocaleDateString();
+  if (FNUM_COLS.has(index)) return fNum(value);
+  if (PNUM_COLS.has(index)) return pNum(value).display;
+  return value;
+};
   if (!tests) return <p>Loading...</p>;
 
   // Find indexes of headers to display
   const visibleIndexes = tests.headers
     .map((h, i) => (visibleHeaders.includes(h) ? i : -1))
     .filter((i) => i !== -1);
+
 
   return (
     <div className="bg-card rounded-lg shadow overflow-x-auto">
@@ -50,9 +63,8 @@ function TestTable({ visibleHeaders = []}) {
             >
               {visibleIndexes.map((i) => (
                 <td key={i} className="px-4 py-1 text-foreground">
-                  {row.data[i] instanceof Date
-                    ? row.data[i].toLocaleDateString()
-                    : row.data[i]}
+                  {formatCell(row.data[i], i)}
+                  {/* if (i==9) fnum(row.data[i])} */}
                 </td>
               ))}
             </tr>

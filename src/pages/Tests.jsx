@@ -172,25 +172,25 @@ function TestContent({ sidebarOpen, setSidebarOpen, interval, dateForm, setInter
             <GenericStatsCardWithChart statd={preindexStats} graphData={preindexData} lineDatakey="PREIndex" CI={13} info = "(PR/quickness) max is 72"/>  
           </div>
           
-                  <div className="flex gap-2 mb-4">
-                    {["daily", "weekly", "monthly", "yearly"].map((option) => (
-                        <button
-                        key={option}
-                        onClick={() => setInterval(option)}
-                        className={`px-3 py-1 rounded whitespace-nowrap ${
-                          interval === option
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-white dark:border-gray-900 "
-                      }`}
-                        >
-                        {option.charAt(0).toUpperCase() + option.slice(1)}
-                        </button>
-                    ))}
-                    </div>  
+          {/* <div className="flex gap-2 mb-4">
+            {["daily", "weekly", "monthly", "yearly"].map((option) => (
+                <button
+                key={option}
+                onClick={() => setInterval(option)}
+                className={`px-3 py-1 rounded whitespace-nowrap ${
+                  interval === option
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-white dark:border-gray-900 "
+              }`}
+                >
+                {option.charAt(0).toUpperCase() + option.slice(1)}
+                </button>
+            ))}
+            </div>   */}
 
           <h1>Tests</h1>
           <TestTable
-            visibleHeaders={["Date", "Test Name", "Total Qs", "Attempted", "Correct", "Wrong", "Unattempted", "Score", "Precision %", "Time (min)", "Readiness"]}
+            visibleHeaders={["Date", "Test Name", "Total Qs", "Attempted", "Correct", "Wrong", "Unattempted", "Score %", "Precision %", "Time (min)", "Readiness"]}
           />
         </div>
       </main>

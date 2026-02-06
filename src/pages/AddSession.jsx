@@ -443,7 +443,7 @@ const bookChapterMap = useMemo(() => {
                   : "text-transparent"
               }`}
               >
-              <span className={`flex-1 transition-opacity duration-500 ${status ? "opacity-100" : "opacity-0"}`}>
+              <span className={`flex-1 text-2xl transition-opacity duration-500 ${status ? "opacity-100" : "opacity-0"}`}>
                 {status === "success" ? "✔" : status === "error" ? "✘" : ""}
               </span>
                                 

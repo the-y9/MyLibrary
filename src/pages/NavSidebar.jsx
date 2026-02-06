@@ -7,6 +7,7 @@ const navItems = [
   { name: "Tests", path: "/tests" },
   { name: "Syllabus", path: "/syllabus" },
   { name: "Feedback", path: "/fb" },
+  { name: "News", path: "https://the-y9.github.io/news" },
   // { name: "Add Session", path: "/add-session" },
 ];
 
